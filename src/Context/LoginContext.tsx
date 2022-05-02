@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react'
 
-import UserLoginService from '../Assets/js/user-login-service'
-import CognitoService from '../Assets/js/cognito-service'
+import UserLoginService from '../assets/js/user-login-service'
+import CognitoService from '../assets/js/cognito-service'
 import { Outlet } from 'react-router'
 
 const _loginService = new UserLoginService()
@@ -10,7 +10,7 @@ const _cognitoService = new CognitoService()
 export const LoginContext = createContext({})
 LoginContext.displayName = 'LoginContext'
 
-export const LoginProvider = () => {
+export const LoginProvider = ({ children }: any) => {
   const [isAuthenticating, setIsAuthenticating] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userData, setUserData] = useState({})
@@ -26,7 +26,7 @@ export const LoginProvider = () => {
         setIsAuthenticating
       }}
     >
-      <Outlet />
+      {children}
     </LoginContext.Provider>
   )
 }

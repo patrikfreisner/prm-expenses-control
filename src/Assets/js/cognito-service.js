@@ -1,26 +1,31 @@
-import { config } from 'aws-sdk'
-import { _REGION, _POOL_DATA } from './properties-aws-cognito'
+import {
+  config
+} from 'aws-sdk'
+import {
+  _REGION,
+  _POOL_DATA
+} from './properties-aws-cognito'
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js'
 
 export default class CognitoService {
-  constructor () {
+  constructor() {
     console.log('CognitoService has been initialized')
     config.region = _REGION
   }
 
-  getUserPool () {
+  getUserPool() {
     return new AmazonCognitoIdentity.CognitoUserPool(_POOL_DATA)
   }
 
-  getCurrentUser () {
+  getCurrentUser() {
     return this.getUserPool().getCurrentUser()
   }
 
-  getCognitoIdentity () {
+  getCognitoIdentity() {
     return config.credentials.identityId
   }
 
-  getCurrentUserData () {
+  getCurrentUserData() {
     return this.getUserPool()
       .getCurrentUser()
       .getSession((err, session) => {
@@ -37,7 +42,7 @@ export default class CognitoService {
       })
   }
 
-  getAuthToken () {
+  getAuthToken() {
     return this.getCurrentUser().getSession(function (err, session) {
       if (err) {
         return false
@@ -50,9 +55,9 @@ export default class CognitoService {
     })
   }
 
-  callback () {}
+  callback() {}
 
-  callbackWithParam (result) {
+  callbackWithParam(result) {
     if (result) {
       console.log('Get Token ID was retrieved')
     } else {

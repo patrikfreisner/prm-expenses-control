@@ -1,12 +1,12 @@
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js'
-import CognitoService from '../../assets/js/cognito-service'
+import CognitoService from './cognito-service'
 
 export default class UserLoginService {
-  constructor () {
+  constructor() {
     console.log('UserLoginService has been initialized')
   }
 
-  authenticate (username, password, callback) {
+  authenticate(username, password, callback) {
     let cognitoService = new CognitoService()
 
     // Need to provide placeholder keys unless unauthorised user access is enabled for user pool
@@ -37,7 +37,7 @@ export default class UserLoginService {
     })
   }
 
-  forgotPassword (username, callback) {
+  forgotPassword(username, callback) {
     let cognitoService = new CognitoService()
 
     let userData = {
@@ -54,13 +54,13 @@ export default class UserLoginService {
       onFailure: function (err) {
         callback.cognitoCallback(err.message, null)
       },
-      inputVerificationCode () {
+      inputVerificationCode() {
         callback.cognitoCallback('', null)
       }
     })
   }
 
-  confirmNewPassword (email, verificationCode, password, callback) {
+  confirmNewPassword(email, verificationCode, password, callback) {
     let cognitoService = new CognitoService()
     let userData = {
       Username: email,
@@ -79,13 +79,13 @@ export default class UserLoginService {
     })
   }
 
-  logout () {
+  logout() {
     let cognitoService = new CognitoService()
     console.log('Logging out')
     cognitoService.getCurrentUser().signOut()
   }
 
-  isAuthenticated (callback) {
+  isAuthenticated(callback) {
     let cognitoService = new CognitoService()
     if (callback == null) throw 'Callback in isAuthenticated() cannot be null'
 

@@ -2,11 +2,11 @@ import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js'
 import CognitoService from './cognito-service'
 
 export default class UserRegistrationService {
-  constructor () {
+  constructor() {
     console.log('UserRegistrationService has been initialized')
   }
 
-  register (user, callback) {
+  register(user, callback) {
     let cognitoService = new CognitoService()
     var attributeList = []
 
@@ -22,14 +22,14 @@ export default class UserRegistrationService {
       Name: 'nickname',
       Value: user.nickname
     }
-    var updatedAt = {
-      Name: 'updated_at',
-      Value: user.updated_at
-    }
+    // var updatedAt = {
+    //   Name: 'updated_at',
+    //   Value: user.updated_at
+    // }
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail))
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute(dataName))
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute(dataNickname))
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute(updatedAt))
+    // attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute(updatedAt))
 
     cognitoService
       .getUserPool()
@@ -46,7 +46,7 @@ export default class UserRegistrationService {
       })
   }
 
-  confirmRegistration (username, confirmationCode, callback) {
+  confirmRegistration(username, confirmationCode, callback) {
     let cognitoService = new CognitoService()
     var userData = {
       Username: username,
@@ -64,7 +64,7 @@ export default class UserRegistrationService {
     })
   }
 
-  resendCode (username, callback) {
+  resendCode(username, callback) {
     let cognitoService = new CognitoService()
     var userData = {
       Username: username,
