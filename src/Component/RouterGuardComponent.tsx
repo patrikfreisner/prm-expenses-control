@@ -13,7 +13,6 @@ import { RegisterComponent } from './Authentication/Regiser/RegisterComponent';
 import { RegisterProvider } from '../Context/RegisterContext';
 
 export const ApplicationRouterConfig = () => {
-
     return (
         <BrowserRouter>
             <Routes>
@@ -48,7 +47,7 @@ export const PrivateOutlet = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (isAuthenticated === false) {
             checkIsAuthenticated((response: boolean) => {
                 if (response === true) navigate('/');
             })
@@ -69,10 +68,8 @@ export const NonAuthenticatedOutlet = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            checkIsAuthenticated((response: boolean) => {
-                if (response === true) navigate('/');
-            })
+        if (isAuthenticated == true) {
+            navigate('/');
         };
 
     }, [checkIsAuthenticated, isAuthenticated, navigate]);
@@ -82,6 +79,6 @@ export const NonAuthenticatedOutlet = () => {
             <Outlet />
         </>
     ) : (
-        <Navigate to={{ pathname: '' }} />
+        <Navigate to={{ pathname: '/' }} />
     )
 }
