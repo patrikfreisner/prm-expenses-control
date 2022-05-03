@@ -2,7 +2,6 @@ import React, { createContext, useState, useContext, useEffect } from 'react'
 
 import UserLoginService from '../assets/js/user-login-service'
 import CognitoService from '../assets/js/cognito-service'
-import { Outlet } from 'react-router'
 
 const _loginService = new UserLoginService()
 const _cognitoService = new CognitoService()
@@ -44,13 +43,11 @@ export const useLoginContext = () => {
   // Authenticate
   function authenticate(user: any, passw: any, callback: any) {
     _loginService.authenticate(user, passw, (evt: any, response: any) => {
-      // _loginService.isAuthenticated((evt, response) => {
       setIsAuthenticated(response)
       setUserData(_cognitoService.getCurrentUserData())
       if (callback) {
         callback(evt, response)
       }
-      // })
     })
   }
 

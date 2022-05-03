@@ -10,7 +10,7 @@ import ExpensesComponent from './Workspace/ExpensesControl/ExpensesComponent';
 import { SavingsComponent } from './Workspace/SavingsControl/SavingsComponent';
 import { LoginComponent } from './Authentication/Login/LoginComponent';
 import { RegisterComponent } from './Authentication/Regiser/RegisterComponent';
-import { RegisterContext, RegisterProvider } from '../Context/RegisterContext';
+import { RegisterProvider } from '../Context/RegisterContext';
 
 export const ApplicationRouterConfig = () => {
 
@@ -26,11 +26,13 @@ export const ApplicationRouterConfig = () => {
                         {/* <Route path='company' element={<CompanyAdministrationComponent />} /> */}
                     </Route>
                 </Route>
-                <Route path='login' element={<LoginComponent />} />
-                <Route path='register' element={
-                    <RegisterProvider>
-                        <RegisterComponent />
-                    </RegisterProvider>} />
+                <Route path='' element={<NonAuthenticatedOutlet />}>
+                    <Route path='login' element={<LoginComponent />} />
+                    <Route path='register' element={
+                        <RegisterProvider>
+                            <RegisterComponent />
+                        </RegisterProvider>} />
+                </Route>
                 {/* Default Route */}
                 <Route index element={<Navigate to={'/workspace/expenses'} />} />
                 {/* No matching */}
@@ -42,14 +44,15 @@ export const ApplicationRouterConfig = () => {
 
 
 export const PrivateOutlet = () => {
-    // let isAuthenticated = true;
     const { isAuthenticated, checkIsAuthenticated } = useLoginContext();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isAuthenticated) checkIsAuthenticated((msg: any, response: boolean) => {
-            if (response === true) navigate('/');
-        });
+        if (!isAuthenticated) {
+            checkIsAuthenticated((response: boolean) => {
+                if (response === true) navigate('/');
+            })
+        };
     }, [checkIsAuthenticated, isAuthenticated, navigate]);
 
     return isAuthenticated === true ? (
@@ -58,5 +61,27 @@ export const PrivateOutlet = () => {
         </>
     ) : (
         <Navigate to={{ pathname: 'login' }} />
+    )
+}
+
+export const NonAuthenticatedOutlet = () => {
+    const { isAuthenticated, checkIsAuthenticated } = useLoginContext();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            checkIsAuthenticated((response: boolean) => {
+                if (response === true) navigate('/');
+            })
+        };
+
+    }, [checkIsAuthenticated, isAuthenticated, navigate]);
+
+    return isAuthenticated === false ? (
+        <>
+            <Outlet />
+        </>
+    ) : (
+        <Navigate to={{ pathname: '' }} />
     )
 }

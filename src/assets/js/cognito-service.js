@@ -18,7 +18,7 @@ export default class CognitoService {
   }
 
   getCurrentUser() {
-    return this.getUserPool().getCurrentUser()
+    return this.getUserPool()?.getCurrentUser()
   }
 
   getCognitoIdentity() {
@@ -26,9 +26,7 @@ export default class CognitoService {
   }
 
   getCurrentUserData() {
-    return this.getUserPool()
-      .getCurrentUser()
-      .getSession((err, session) => {
+    return this.getUserPool()?.getCurrentUser()?.getSession((err, session) => {
         if (err) {
           console.log("Can't set the credentials:" + err)
           return err
@@ -43,7 +41,7 @@ export default class CognitoService {
   }
 
   getAuthToken() {
-    return this.getCurrentUser().getSession(function (err, session) {
+    return this.getCurrentUser()?.getSession(function (err, session) {
       if (err) {
         return false
       } else {

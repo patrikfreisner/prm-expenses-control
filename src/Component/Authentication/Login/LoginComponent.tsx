@@ -1,17 +1,12 @@
-import React from 'react'
-import CognitoService from '../../../assets/js/cognito-service';
+import { useNavigate } from 'react-router';
 import { useLoginContext } from '../../../Context/LoginContext'
 
 export const LoginComponent = () => {
     const { authenticate } = useLoginContext();
 
     const logIn = () => {
-        authenticate("patrikfr.nx@gmail.com", "@Tst12345", (msg: any, response: any) => {
-            console.log(">>>> Authenticate!", msg, response);
-        });
+        authenticate("patrikfr.nx@gmail.com", "@Tst12345", null);
     }
-
-    console.log(CognitoService);
 
     return (
         <>
