@@ -14,7 +14,7 @@ import { RegisterProvider } from '../Context/RegisterContext';
 
 export const ApplicationRouterConfig = () => {
     return (
-        <BrowserRouter>
+        <BrowserRouter >
             <Routes>
                 <Route path='' element={<PrivateOutlet />}>
                     <Route path='' element={<MainPageComponent />} >
@@ -24,16 +24,18 @@ export const ApplicationRouterConfig = () => {
                         </Route>
                         {/* <Route path='company' element={<CompanyAdministrationComponent />} /> */}
                     </Route>
+                    <Route index element={<Navigate to={'/workspace'} />} />
                 </Route>
                 <Route path='' element={<NonAuthenticatedOutlet />}>
                     <Route path='login' element={<LoginComponent />} />
                     <Route path='register' element={
                         <RegisterProvider>
                             <RegisterComponent />
-                        </RegisterProvider>} />
+                        </RegisterProvider>
+                    } />
                 </Route>
                 {/* Default Route */}
-                <Route index element={<Navigate to={'/workspace/expenses'} />} />
+                <Route index element={<Navigate to={'/workspace'} />} />
                 {/* No matching */}
                 <Route path='*' element={<Navigate to={'/workspace/expenses'} />} />
             </Routes>
@@ -44,15 +46,10 @@ export const ApplicationRouterConfig = () => {
 
 export const PrivateOutlet = () => {
     const { isAuthenticated, checkIsAuthenticated } = useLoginContext();
-    const navigate = useNavigate();
 
     useEffect(() => {
-        if (isAuthenticated === false) {
-            checkIsAuthenticated((response: boolean) => {
-                if (response === true) navigate('/');
-            })
-        };
-    }, [checkIsAuthenticated, isAuthenticated, navigate]);
+        checkIsAuthenticated(() => { });
+    }, [isAuthenticated]);
 
     return isAuthenticated === true ? (
         <>
@@ -65,14 +62,10 @@ export const PrivateOutlet = () => {
 
 export const NonAuthenticatedOutlet = () => {
     const { isAuthenticated, checkIsAuthenticated } = useLoginContext();
-    const navigate = useNavigate();
 
     useEffect(() => {
-        if (isAuthenticated == true) {
-            navigate('/');
-        };
-
-    }, [checkIsAuthenticated, isAuthenticated, navigate]);
+        checkIsAuthenticated(() => { });
+    }, [isAuthenticated]);
 
     return isAuthenticated === false ? (
         <>
