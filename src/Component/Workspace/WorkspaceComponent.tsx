@@ -1,13 +1,17 @@
-import React from 'react'
 import { Outlet } from 'react-router'
-import { Link } from 'react-router-dom'
 import AppBarComponent from './AppBar/AppBarComponent'
+
+import "./WorkspaceStyle.css"
 
 export const WorkspaceComponent = () => {
     return (
         <>
-            <AppBarComponent />
-            <Outlet />
+            <div className='appBarContainer'>
+                {/* <AppBarComponent /> */}
+            </div>
+            <div className='workspaceContainerPadding'>
+                <Outlet />
+            </div>
         </>
     )
 }

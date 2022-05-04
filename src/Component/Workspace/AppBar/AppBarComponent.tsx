@@ -11,10 +11,11 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Link, useNavigate } from 'react-router-dom';
-import { Logout } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 import { useLoginContext } from '../../../Context/LoginContext'
+
+import "./AppBarStyle.css"
 
 const AppBarComponent = () => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -61,7 +62,7 @@ const AppBarComponent = () => {
             handler: () => {
                 alert("Nada pra fazer aqui por enquanto!");
             }
-        }, 
+        },
         {
             label: 'Logout',
             internal_name: 'logout',
@@ -72,7 +73,7 @@ const AppBarComponent = () => {
     ];
 
     return (
-        <AppBar position="static">
+        <AppBar className='mainAppBar' position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Typography
@@ -114,7 +115,10 @@ const AppBarComponent = () => {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page.internal_name} onClick={page.handler}>
+                                <MenuItem key={page.internal_name} onClick={() => {
+                                    page.handler();
+                                    handleCloseNavMenu();
+                                }}>
                                     <Typography textAlign="center">{page.label}</Typography>
                                 </MenuItem>
                             ))}
@@ -126,13 +130,16 @@ const AppBarComponent = () => {
                         component="div"
                         sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
                     >
-                        LOGO
+                        PrimumIT!
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
                             <Button
                                 key={page.internal_name}
-                                onClick={page.handler}
+                                onClick={() => {
+                                    page.handler();
+                                    handleCloseNavMenu();
+                                }}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 {page.label}
@@ -143,7 +150,7 @@ const AppBarComponent = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar alt="Patrik Reisner" src="/static/images/avatar/2.jpg" />
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -163,7 +170,10 @@ const AppBarComponent = () => {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting.internal_name} onClick={setting.handler}>
+                                <MenuItem key={setting.internal_name} onClick={() => {
+                                    setting.handler();
+                                    handleCloseUserMenu();
+                                }}>
                                     <Typography textAlign="center">{setting.label}</Typography>
                                 </MenuItem>
                             ))}
