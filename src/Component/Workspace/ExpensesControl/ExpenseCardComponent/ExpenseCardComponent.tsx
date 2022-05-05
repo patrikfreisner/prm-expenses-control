@@ -20,7 +20,7 @@ const PortalShowMoreDetailsComponent = ({ showMore, container }: PortalShowMoreD
     return (
         <Portal container={container.current}>
             <Grow in={showMore}>
-                <Box className="showMoredetailsContainer"></Box>
+                <Box className="showMoreDetailsContainer"></Box>
             </Grow>
         </Portal>
     );
