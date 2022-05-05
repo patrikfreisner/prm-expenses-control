@@ -7,7 +7,7 @@ export const WorkspaceComponent = () => {
     return (
         <>
             <div className='appBarContainer'>
-                {/* <AppBarComponent /> */}
+                <AppBarComponent />
             </div>
             <div className='workspaceContainerPadding'>
                 <Outlet />

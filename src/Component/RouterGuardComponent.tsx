@@ -24,7 +24,6 @@ export const ApplicationRouterConfig = () => {
                         </Route>
                         {/* <Route path='company' element={<CompanyAdministrationComponent />} /> */}
                     </Route>
-                    <Route index element={<Navigate to={'/workspace'} />} />
                 </Route>
                 <Route path='' element={<NonAuthenticatedOutlet />}>
                     <Route path='login' element={<LoginComponent />} />
@@ -35,7 +34,7 @@ export const ApplicationRouterConfig = () => {
                     } />
                 </Route>
                 {/* Default Route */}
-                <Route index element={<Navigate to={'/workspace'} />} />
+                <Route index element={<Navigate to={'/workspace/expenses'} />} />
                 {/* No matching */}
                 <Route path='*' element={<Navigate to={'/workspace/expenses'} />} />
             </Routes>
