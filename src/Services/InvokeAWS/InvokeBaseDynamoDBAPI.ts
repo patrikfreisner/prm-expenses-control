@@ -1,18 +1,19 @@
-import axios, { AxiosResponse } from "axios";
+import axios from '../RequestInterceptor/RequestInterceptor'
+import { AxiosResponse } from "axios";
 import { createItemParameters, getItemParameters, queryItemsParameters, scanItemsParameters, updateItemParameters } from "./InterfaceDynamoDBAPIs";
 
-export const API_BASE_URL = "https://n1ecug9pmk.execute-api.us-east-1.amazonaws.com/V1";
+// export const API_BASE_URL = "https://n1ecug9pmk.execute-api.us-east-1.amazonaws.com/V1";
 
 export async function getItem(table: string, resourceData: getItemParameters): Promise<AxiosResponse<any>> {
     // ------ AWS 'get' function parameters
     // ////// TableName is overwrited by API
-    return axios.post(API_BASE_URL + "/" + table + "/getItem", resourceData);
+    return axios.post("/" + table + "/getItem", resourceData);
 }
 
 export async function queryItems(table: string, resourceData: queryItemsParameters): Promise<AxiosResponse<any>> {
     // ------ AWS 'query' function parameters
     // ////// TableName is overwrited by API
-    return axios.post(API_BASE_URL + "/" + table + "/queryItems", resourceData);
+    return axios.post("/" + table + "/queryItems", resourceData);
 }
 
 export async function scanItems(table: string, resourceData: scanItemsParameters): Promise<AxiosResponse<any>> {
@@ -21,21 +22,21 @@ export async function scanItems(table: string, resourceData: scanItemsParameters
     // ////// TableName is overwrited by API
     // ////// scan is very expensive to use, try to avoid it!
 
-    return axios.post(API_BASE_URL + "/" + table + "/scanItems", resourceData);
+    return axios.post("/" + table + "/scanItems", resourceData);
 }
 
 export async function createItem(table: string, resourceData: createItemParameters): Promise<AxiosResponse<any>> {
     // ------ AWS 'put' function parameters
     // ////// TableName is overwrited by API
 
-    return axios.post(API_BASE_URL + "/" + table + "/createItem", resourceData);
+    return axios.post("/" + table + "/createItem", resourceData);
 }
 
 export async function updateItem(table: string, resourceData: updateItemParameters): Promise<AxiosResponse<any>> {
     // ------ AWS 'update' function parameters
     // ------ TableName is overwrited by API
 
-    return axios.put(API_BASE_URL + "/" + table + "/updateItem", resourceData);
+    return axios.put("/" + table + "/updateItem", resourceData);
 }
 
 export async function deleteItem(table: string, pk: string, sk: string): Promise<AxiosResponse<any>> {
@@ -71,7 +72,7 @@ export async function deleteItem(table: string, pk: string, sk: string): Promise
     // ReturnItemCollectionMetrics: SIZE | NONE,
     // ReturnValues: NONE | ALL_OLD | UPDATED_OLD | ALL_NEW | UPDATED_NEW
 
-    return axios.delete(API_BASE_URL + "/" + table + "/deleteItem", { params: { pk, sk } });
+    return axios.delete("/" + table + "/deleteItem", { params: { pk, sk } });
 }
 
 function _apiUsageWarn() {
