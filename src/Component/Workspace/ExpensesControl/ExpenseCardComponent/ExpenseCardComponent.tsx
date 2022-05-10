@@ -20,7 +20,8 @@ const PortalShowMoreDetailsComponent = ({ showMore, container }: PortalShowMoreD
     return (
         <Portal container={container.current}>
             <Grow in={showMore}>
-                <Box className="showMoredetailsContainer"></Box>
+                <Box className="showMoredetailsContainer">
+                </Box>
             </Grow>
         </Portal>
     );
@@ -38,7 +39,7 @@ const ExpenseCardComponent = () => {
                 <Box className='cardContainer'>
                     <Stack className="expenseHeaderContainer">
                         <Box>
-                            <Typography variant='h6' style={{ userSelect: 'none' }} noWrap> NuBank contas de cartão de crdito </Typography>
+                            <Typography variant='h6' style={{ userSelect: 'none' }} noWrap> NuBank contas de cartão de credito </Typography>
                         </Box>
                         <Box>
                             <Typography variant='body1' style={{ userSelect: 'none' }}> R$ 1.450,00 </Typography>

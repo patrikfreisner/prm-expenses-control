@@ -26,13 +26,14 @@
 /* PortalShowMoreDetails Style */
 
 .showMoredetailsContainer {
-    background-color: #e2e2e2; 
-    height: 50px; 
+    background-color: #e2e2e2;
+    height: 50px;
     border-radius: 0px 0px 5px 5px;
     margin-top: 3px;
-    display: flex; 
+    display: flex;
     align-content: space-around;
     justify-content: space-between;
+    border-top: 2px dotted white;
 }
 
 @media (min-width:320px) and (max-width: 480px) {
