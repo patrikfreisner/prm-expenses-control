@@ -1,5 +1,4 @@
-import { Divider, Grid } from "@mui/material"
-import ExpenseCardComponent from "./ExpenseCardComponent/ExpenseCardComponent"
+import { Grid } from "@mui/material"
 import ExpenseLaneComponent from "./ExpenseLaneComponent/ExpenseLaneComponent"
 import "./ExpensesStyle.css"
 

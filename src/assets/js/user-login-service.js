@@ -87,7 +87,7 @@ export default class UserLoginService {
 
   isAuthenticated(callback) {
     let cognitoService = new CognitoService()
-    if (callback == null) throw 'Callback in isAuthenticated() cannot be null'
+    if (callback == null) throw new Error('Callback in isAuthenticated() cannot be null')
 
     console.log('Getting the current user')
     let cognitoUser = cognitoService.getCurrentUser()
@@ -99,7 +99,7 @@ export default class UserLoginService {
           callback(err, false)
         } else {
           console.log('Session is valid: ' + session.isValid())
-          callback(err, session.isValid())
+          callback(session, session.isValid())
         }
       })
     } else {

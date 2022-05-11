@@ -13,6 +13,7 @@ export const LoginProvider = ({ children }: any) => {
   const [isAuthenticating, setIsAuthenticating] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userData, setUserData] = useState({})
+  const [jwtToken, setJwtToken] = useState("");
 
   return (
     <LoginContext.Provider
@@ -22,7 +23,9 @@ export const LoginProvider = ({ children }: any) => {
         isAuthenticated,
         setIsAuthenticated,
         isAuthenticating,
-        setIsAuthenticating
+        setIsAuthenticating,
+        jwtToken,
+        setJwtToken
       }}
     >
       {children}
@@ -37,29 +40,37 @@ export const useLoginContext = () => {
     isAuthenticated,
     setIsAuthenticated,
     isAuthenticating,
-    setIsAuthenticating
+    setIsAuthenticating,
+    jwtToken,
+    setJwtToken
   } = useContext<any>(LoginContext)
 
   // Authenticate
   function authenticate(user: any, passw: any, callback: any) {
-    _loginService.authenticate(user, passw, (evt: any, response: any) => {
-      setIsAuthenticated(response)
+    _loginService.authenticate(user, passw, (event: any, session: any) => {
+      setIsAuthenticated((session ? true : false))
       setUserData(_cognitoService.getCurrentUserData())
+      setJwtToken(session.getIdToken().getJwtToken());
       if (callback) {
-        callback(evt, response)
+        callback(event, session)
       }
     })
   }
 
   // Check if is authenticated
   function checkIsAuthenticated(callback: any) {
-    _loginService.isAuthenticated((msg: any, isAuthenticated: any) => {
+    _loginService.isAuthenticated((session: any, isAuthenticated: any) => {
       if (isAuthenticated === true) {
         setIsAuthenticated(isAuthenticated);
+        setJwtToken(session.getIdToken().getJwtToken());
 
         callback(isAuthenticated);
       }
     });
+  }
+
+  function getAuthenticationToken(): string {
+    return jwtToken;
   }
 
   // Logout
@@ -88,6 +99,7 @@ export const useLoginContext = () => {
     isAuthenticating,
     setIsAuthenticating,
     checkIsAuthenticated,
+    getAuthenticationToken,
     authenticate,
     logout
   }

@@ -1,4 +1,5 @@
 import { AxiosError, AxiosResponse } from "axios";
+import { useLoginContext } from "../Context/LoginContext";
 import { getLastMonth, getNextMonth } from "../Services/DateTime/DateTimeHandler";
 import { createItem, deleteItem, getItem, scanItems, updateItem } from "../Services/InvokeAWS/InvokeBaseDynamoDBAPI";
 
@@ -18,6 +19,13 @@ test('time calculation is OK on February', () => {
 
     expect(getLastMonth(_thDate).getMonth()).toEqual(2);
     expect(getNextMonth(_thDate).getMonth()).toEqual(4);
+});
+
+test("authenticate user", async () => {
+    const { authenticate } = useLoginContext();
+    authenticate("patrikfr.nx@gmail.com", "@Tst12345", (event: any, session: any) => {
+        expect(session).toBeDefined();
+    });
 });
 
 test("create item on AWS DynamoDB successfully", async () => {
