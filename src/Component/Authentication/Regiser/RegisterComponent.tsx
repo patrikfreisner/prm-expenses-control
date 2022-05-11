@@ -15,6 +15,18 @@ export const RegisterComponent = () => {
             console.log(">>> Resposne msg: ", msg, response);
         });
     }
+
+    const register2 = () => {
+        registerNewUser({
+            email: "lilliavitoria@gmail.com",
+            password: "@Tst12345",
+            name: "Lillia Lirio",
+            nickname: "lillialirio"
+        }, (msg: any, response: any) => {
+            console.log(">>> Resposne msg: ", msg, response);
+        });
+    }
+
     return (
         <>
             <div>RegisterComponent</div>

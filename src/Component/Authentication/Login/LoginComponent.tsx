@@ -9,6 +9,10 @@ export const LoginComponent = () => {
         authenticate("patrikfr.nx@gmail.com", "@Tst12345", null);
     }
 
+    const logIn2 = () => {
+        authenticate("lilliavitoria@gmail.com", "@Tst12345", null);
+    }
+
     return (
         <>
             <div>LoginComponent</div>

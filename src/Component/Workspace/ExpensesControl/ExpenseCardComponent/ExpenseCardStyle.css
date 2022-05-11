@@ -32,7 +32,7 @@
     margin-top: 3px;
     display: flex;
     align-content: space-around;
-    justify-content: space-between;
+    justify-content: space-around;
     border-top: 3.5px white dotted;
 }
 
@@ -51,18 +51,30 @@
 
 @media (min-width:481px) and (max-width: 640px) {
     /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+    .cardIconsContainer {
+        justify-content: flex-end;
+    }
 }
 
 @media (min-width:641px) and (max-width: 960px) {
     /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+    .cardIconsContainer {
+        justify-content: flex-end;
+    }
 }
 
 @media (min-width:961px) and (max-width: 1024px) {
     /* tablet, landscape iPad, lo-res laptops ands desktops */
+    .cardIconsContainer {
+        justify-content: flex-end;
+    }
 }
 
 @media (min-width:1025px) and (max-width: 1281px) {
     /* big landscape tablets, laptops, and desktops */
+    .cardIconsContainer {
+        justify-content: flex-end;
+    }
 }
 
 @media (min-width:1281px) {

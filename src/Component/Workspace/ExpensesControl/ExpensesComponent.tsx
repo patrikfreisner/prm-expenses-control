@@ -7,7 +7,7 @@ const ExpensesComponent = () => {
 
   return (
     <>
-      <Grid container spacing={2}>
+      <Grid className="expensesLaneContainer" container spacing={2}>
         <ExpenseLaneComponent />
         <ExpenseLaneComponent />
         <ExpenseLaneComponent />
