@@ -34,7 +34,7 @@ export const ApplicationRouterConfig = () => {
                     } />
                 </Route>
                 {/* Default Route */}
-                <Route index element={<Navigate to={'/workspace/expenses'} />} />
+                <Route index element={<Navigate to={'/workspace/savings'} />} />
                 {/* No matching */}
                 <Route path='*' element={<Navigate to={'/workspace/expenses'} />} />
             </Routes>
