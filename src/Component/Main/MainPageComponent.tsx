@@ -5,18 +5,6 @@ import { getItem } from '../../Services/InvokeAWS/InvokeBaseDynamoDBAPI';
 
 const MainPageComponent = () => {
 
-    getItem("PRMDB001", {
-        Key: {
-            "pk": "CSPRM000001",
-            "sk": "CD#01"
-        }
-    }).then((data) => {
-        console.log("It works!!!");
-        console.log(data);
-    }).catch((error) => {
-        console.error(error);
-    });
-
     return (
         <>
             <Outlet />

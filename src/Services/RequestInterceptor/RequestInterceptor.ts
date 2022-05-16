@@ -1,7 +1,5 @@
 import axios from 'axios';
 import CognitoService from '../../assets/js/cognito-service';
-import UserLoginService from '../../assets/js/user-login-service';
-// const axios = require('axios');
 
 const API_BASE_URL = "https://n1ecug9pmk.execute-api.us-east-1.amazonaws.com/V1";
 // Step-1: Create a new Axios instance with a custom config.
@@ -24,14 +22,6 @@ const requestHandler = (request: any) => {
     return request;
 };
 
-// const responseHandler = (response: any) => {
-//     if (response.status === 401) {
-//         window.location = '/login';
-//     }
-
-//     return response;
-// };
-
 const errorHandler = (error: any) => {
     return Promise.reject(error);
 };
@@ -43,12 +33,6 @@ primumAxiosInterception.interceptors.request.use(
     (request) => requestHandler(request),
     (error) => errorHandler(error)
 );
-
-// primumAxiosInterception.interceptors.response.use(
-//     (response) => responseHandler(response),
-//     (error) => errorHandler(error)
-//  );
-
 
 // Step-4: Export the newly created Axios instance to be used in different locations.
 export default primumAxiosInterception;

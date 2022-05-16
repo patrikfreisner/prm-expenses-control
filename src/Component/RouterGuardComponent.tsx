@@ -11,18 +11,22 @@ import { SavingsComponent } from './Workspace/SavingsControl/SavingsComponent';
 import { LoginComponent } from './Authentication/Login/LoginComponent';
 import { RegisterComponent } from './Authentication/Regiser/RegisterComponent';
 import { RegisterProvider } from '../Context/RegisterContext';
+import { ExpensesProvider } from '../Context/ExpensesContext';
 
 export const ApplicationRouterConfig = () => {
     return (
-        <BrowserRouter >
+        <BrowserRouter>
             <Routes>
                 <Route path='' element={<PrivateOutlet />}>
                     <Route path='' element={<MainPageComponent />} >
-                        <Route path='workspace' element={<WorkspaceComponent />}>
+                        <Route path='workspace' element={
+                            <ExpensesProvider>
+                                <WorkspaceComponent />
+                            </ExpensesProvider>
+                        }>
                             <Route path='expenses' element={<ExpensesComponent />} />
                             <Route path='savings' element={<SavingsComponent />} />
                         </Route>
-                        {/* <Route path='company' element={<CompanyAdministrationComponent />} /> */}
                     </Route>
                 </Route>
                 <Route path='' element={<NonAuthenticatedOutlet />}>
@@ -34,7 +38,7 @@ export const ApplicationRouterConfig = () => {
                     } />
                 </Route>
                 {/* Default Route */}
-                <Route index element={<Navigate to={'/workspace/savings'} />} />
+                <Route index element={<Navigate to={'/workspace/expenses'} />} />
                 {/* No matching */}
                 <Route path='*' element={<Navigate to={'/workspace/expenses'} />} />
             </Routes>

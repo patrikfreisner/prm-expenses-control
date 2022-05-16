@@ -11,10 +11,10 @@ export interface getItemParameters {
     ReturnConsumedCapacity?: "INDEXES" | "TOTAL" | "NONE";
 };
 export interface queryItemsParameters {
-    AttributesToGet: Array<any>;
-    ConditionalOperator: "AND" | "OR";
-    ConsistentRead: Boolean;
-    ExclusiveStartKey: {
+    AttributesToGet?: Array<any>;
+    ConditionalOperator?: "AND" | "OR";
+    ConsistentRead?: Boolean;
+    ExclusiveStartKey?: {
         [key: string]: any
     };
     ExpressionAttributeNames: {
@@ -23,26 +23,26 @@ export interface queryItemsParameters {
     ExpressionAttributeValues: {
         [key: string]: any
     };
-    FilterExpression: string;
-    IndexName: string;
+    FilterExpression?: string;
+    IndexName?: string;
     KeyConditionExpression: string;
-    KeyConditions: {
+    KeyConditions?: {
         [key: string]: {
             ComparisonOperator: "EQ" | "NE" | "IN" | "LE" | "LT" | "GE" | "GT" | "BETWEEN" | "NOT_NULL" | "NULL" | "CONTAINS" | "NOT_CONTAINS" | "BEGINS_WITH"; /* required */
             AttributeValueList: Array<any>
         }
     };
-    Limit: Number;
-    ProjectionExpression: string;
-    QueryFilter: {
+    Limit?: Number;
+    ProjectionExpression?: string;
+    QueryFilter?: {
         [key: string]: {
             ComparisonOperator: "EQ" | "NE" | "IN" | "LE" | "LT" | "GE" | "GT" | "BETWEEN" | "NOT_NULL" | "NULL" | "CONTAINS" | "NOT_CONTAINS" | "BEGINS_WITH"; /* required */
             AttributeValueList: Array<any>
         }
     };
-    ReturnConsumedCapacity: "INDEXES" | "TOTAL" | "NONE",
-    ScanIndexForward: Boolean;
-    Select: "ALL_ATTRIBUTES" | "ALL_PROJECTED_ATTRIBUTES" | "SPECIFIC_ATTRIBUTES" | "COUNT";
+    ReturnConsumedCapacity?: "INDEXES" | "TOTAL" | "NONE",
+    ScanIndexForward?: Boolean;
+    Select?: "ALL_ATTRIBUTES" | "ALL_PROJECTED_ATTRIBUTES" | "SPECIFIC_ATTRIBUTES" | "COUNT";
 };
 export interface scanItemsParameters {
     AttributesToGet?: Array<string>;

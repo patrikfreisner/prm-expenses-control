@@ -1,16 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { createItem } from '../../../Services/InvokeAWS/InvokeBaseDynamoDBAPI'
 
-import jsonData from '../../../__OwnerData.json'
+// import jsonData from '../../../__OwnerData.json'
+import jsonData from '../../../_TestDataBeforeUsing.json'
 
 export const SavingsComponent = () => {
-    const oldDyanmoDBData: Array<any> = jsonData;
 
     return (
         <>
             <div>SavingsComponent</div>
-            <div>
-                {JSON.stringify(oldDyanmoDBData)}
-            </div>
         </>
     )
 }
