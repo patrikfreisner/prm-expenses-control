@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import React, { createContext, useState, useContext, useEffect } from 'react'
+import React, { createContext, useState, useContext, useEffect, useMemo } from 'react'
 import { FixedExpense } from '../Class/fixed-expense';
 import { RecurringExpense } from '../Class/recurring-expense';
 import { VariableExpense } from '../Class/variable-expense';
@@ -54,9 +54,11 @@ export const useExpensesContext = () => {
         setFixedExpenses
     } = useContext<ExpensesInterface>(ExpensesContext);
 
-    useEffect(() => {
-        classifyUserExpenses();
-    }, [expensesValues]);
+    // useEffect(() => {
+    //     classifyUserExpenses();
+    // }, [expensesValues]);
+
+    useMemo(() => { classifyUserExpenses(); }, [expensesValues]);
 
     const { userData } = useLoginContext();
 
