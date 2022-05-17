@@ -7,11 +7,12 @@ import { VariableExpense } from "../../../Class/variable-expense"
 import { useExpensesContext } from "../../../Context/ExpensesContext"
 import { useLoginContext } from "../../../Context/LoginContext"
 import ExpenseLaneComponent from "./ExpenseLaneComponent/ExpenseLaneComponent"
+import ExpenseSpeedDialComponent from "./ExpenseSpeedDialComponent/ExpenseSpeedDialComponent"
 import "./ExpensesStyle.css"
 
 const ExpensesComponent = () => {
 
-  const { expensesValues, variableExpenses, fixedExpenses, recurringExpenses, getUserExpenses } = useExpensesContext();
+  const { expensesValues, getUserExpenses } = useExpensesContext();
 
   const clk = () => {
     getUserExpenses().then((response) => {
@@ -21,15 +22,10 @@ const ExpensesComponent = () => {
 
   return (
     <>
-      <button onClick={clk}>Get Expenses</button>
-      <div style={{ color: "blue" }}>
-        {JSON.stringify(expensesValues)}
-      </div>
       {/* <Grid className="expensesLaneContainer" container spacing={2}>
         <ExpenseLaneComponent />
-        <ExpenseLaneComponent />
-        <ExpenseLaneComponent />
       </Grid> */}
+      <ExpenseSpeedDialComponent />
     </>
   )
 }
