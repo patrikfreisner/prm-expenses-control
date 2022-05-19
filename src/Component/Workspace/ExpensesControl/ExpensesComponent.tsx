@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material"
+import { Grid, TextField } from "@mui/material"
 import { useEffect } from "react"
 import { isJSDocMemberName } from "typescript"
 import { FixedExpense } from "../../../Class/fixed-expense"
@@ -14,17 +14,12 @@ const ExpensesComponent = () => {
 
   const { expensesValues, getUserExpenses } = useExpensesContext();
 
-  const clk = () => {
-    getUserExpenses().then((response) => {
-      console.log(response);
-    });
-  };
-
   return (
     <>
       {/* <Grid className="expensesLaneContainer" container spacing={2}>
         <ExpenseLaneComponent />
       </Grid> */}
+      <TextField id="filled-basic" label="Filled" variant="filled" />
       <ExpenseSpeedDialComponent />
     </>
   )
