@@ -48,7 +48,7 @@ class ExpenseDateTime extends Date {
 }
 
 export class Expense extends DynamoDBObject {
-    constructor(expense: { pk?: string, sk?: string, description?: string, value?: number, isPaid?: boolean, recurring?: boolean, recurringStart?: ExpenseDateTime, recurringEnd?: ExpenseDateTime, created_at?: Date, updated_at?: Date }) {
+    constructor(expense: { pk?: string, sk?: string, description?: string, value?: number, isPaid?: boolean, recurring?: boolean, recurringStart?: ExpenseDateTime, recurringEnd?: ExpenseDateTime, created_at?: Date, updated_at?: Date, category?: string }) {
         super(expense.pk, expense.sk, expense.created_at, expense.updated_at);
         this.description = expense.description || '';
         this.value = expense.value || 0;
@@ -56,12 +56,14 @@ export class Expense extends DynamoDBObject {
         this.recurringStart = expense.recurring === true && !expense.recurringStart ? new ExpenseDateTime() : (new ExpenseDateTime(expense.recurringStart) || null);
         this.recurringEnd = expense.recurring === true && !expense.recurringEnd ? new ExpenseDateTime("2999-01-01 00:00:01") : (new ExpenseDateTime(expense.recurringEnd) || null);
         this.isPaid = expense.isPaid || false;
+        this.category = expense.category || "";
     }
 
     description: string;
     value: number;
     isPaid: boolean;
     recurring: boolean;
+    category: string;
     recurringStart: ExpenseDateTime | null;
     recurringEnd: ExpenseDateTime | null;
 
