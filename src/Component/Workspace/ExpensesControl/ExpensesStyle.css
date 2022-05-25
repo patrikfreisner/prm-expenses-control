@@ -3,15 +3,6 @@
     padding-right: 10%;
 }
 
-.formBox {
-    display: block;
-    padding: 0% 20%;
-}
-
-.formInput {
-    width: 100%;
-}
-
 @media (min-width:320px) and (max-width: 480px) {
 
     /* smartphones, iPhone, portrait 480x320 phones */

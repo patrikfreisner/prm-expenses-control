@@ -1,7 +1,8 @@
 import React, { ReactElement } from "react";
 import { Control, Controller, RegisterOptions } from "react-hook-form";
 import { TextField } from '@mui/material';
-import NumberFormat from "react-number-format";
+import NumberFormat, { NumberFormatPropsBase } from "react-number-format";
+import { AnyCnameRecord } from "dns";
 
 interface PrmInputTextObject {
   name: string,
@@ -11,11 +12,10 @@ interface PrmInputTextObject {
   watch?: any,
   messages?: any,
   render?: any,
-  mask?: string,
   [key: string]: any
 }
 
-export default function PrmFormInputText({ control, errors, name, watch, rules: { validate, ...rules }, messages, render, mask, ...props }: PrmInputTextObject) {
+export default function PrmFormInputText({ control, errors, name, watch, rules: { validate, ...rules }, messages, render, ...props }: PrmInputTextObject) {
   _exeValidateConfirmPassword(validate, watch);
 
   return (
@@ -65,7 +65,11 @@ interface PrmInputCheckObject {
   onChange: Function
 }
 
-export function PrmFormMaskedInputText({ control, errors, name, watch, rules: { validate, ...rules }, messages, mask, ...props }: PrmInputTextObject) {
+interface PrmMaskedInputTextObject extends PrmInputTextObject {
+  mask: NumberFormatPropsBase<any>
+}
+
+export function PrmFormMaskedInputText({ control, errors, name, watch, rules: { validate, ...rules }, messages, mask, ...props }: PrmMaskedInputTextObject) {
   _exeValidateConfirmPassword(validate, watch);
 
   return (
@@ -78,6 +82,7 @@ export function PrmFormMaskedInputText({ control, errors, name, watch, rules: { 
           return (
             <NumberFormat
               {...props}
+              {...mask}
               // {...field}
               name={name}
               value={value}
@@ -86,16 +91,11 @@ export function PrmFormMaskedInputText({ control, errors, name, watch, rules: { 
                 type: _typoHandler(errors, name)?.type,
                 messages: messages
               })}
-              thousandSeparator={"."}
-              decimalSeparator={","}
-              prefix={"R$ "}
-              decimalScale={2}
-              fixedDecimalScale={true}
               customInput={TextField}
+              isNumericString={true}
               onValueChange={(values) => {
                 onChange(values.value);
-              }}
-              isNumericString={true} />
+              }} />
             // <TextField
             //   {...props}
             //   {...field}

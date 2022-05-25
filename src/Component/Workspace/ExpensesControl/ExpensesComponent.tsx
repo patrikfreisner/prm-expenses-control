@@ -1,8 +1,7 @@
-import { Box, Button, Input, Stack, TextField, Typography } from "@mui/material"
+import { Box, Button, Grid, Input, Stack, TextField, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { useExpensesContext } from "../../../Context/ExpensesContext"
-import PrmFormBuilder from "../../PrimumComponents/FormBuilder/PrmFormBuilder"
-import PrmFormInputText, { PrmFormMaskedInputText } from "../../PrimumComponents/FormBuilder/PrmFormInputText"
+import { FormBuilder, PRMInputMark } from "../../PrimumComponents/FormBuilderV2/PrmFormBuilderV2"
 import ExpenseSpeedDialComponent from "./ExpenseSpeedDialComponent/ExpenseSpeedDialComponent"
 
 import NumberFormat from 'react-number-format';
@@ -28,27 +27,39 @@ const ExpensesComponent = () => {
 
   return (
     <>
+      <FormBuilder onSubmit={onSubmitHandler} defaultValues={{}} mode={"all"}>
+        {/* <TextField label="blablabla" defaultValue={"10102000"} /> */}
+        {/* <TextField {...PRMInputMark} label="Gonna be a blast!" defaultValue={"Hellou????"} /> */}
+        <Box>
+          <TextField {...PRMInputMark} label="Gonna be a blast otherwise!" defaultValue={"Hellou3????"} />
+        </Box>
+      </FormBuilder>
+
       {/* <Grid className="expensesLaneContainer" container spacing={2}>
         <ExpenseLaneComponent />
       </Grid> */}
-
-
-
-      <Stack spacing={2} className="formBox">
+      {/* <Grid container spacing={2}>
         <Typography variant="h3" align="center">My new form</Typography>
         <PrmFormBuilder mode={"onBlur"} onSubmit={onSubmitHandler} defaultValues={{
-          description: "Hello",
+          description: "Parcela do carro",
           value: "21321.00"
         }}>
-          <PrmFormInputText className="formInput" name="description" rules={{ required: true }} />
-          <PrmFormMaskedInputText className="formInput" name="value" rules={{ required: true }} />
+          <Grid item xs={12}>
+            <PrmFormInputText className="formInput" name="description" label={"Descrição"} rules={{ required: true }} />
+          </Grid>
+          <Grid item xs={12}>
+            <PrmFormMaskedInputText className="formInput" name="value" label={"Valor"} rules={{ required: true }} mask={{
+              thousandSeparator: ".",
+              decimalSeparator: ",",
+              prefix: "R$ ",
+              fixedDecimalScale: true,
+              decimalScale: 2
+            }} />
+          </Grid>
 
           <Button variant="outlined" type="submit" disabled={isFormLoading}> Submit </Button>
         </PrmFormBuilder>
-      </Stack>
-      <div id="#th1">
-        {vle}
-      </div>
+      </Grid> */}
       <ExpenseSpeedDialComponent />
     </>
   )
