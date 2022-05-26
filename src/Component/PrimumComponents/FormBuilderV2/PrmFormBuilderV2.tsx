@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SubmitHandler, useForm, ValidationMode } from "react-hook-form";
+import { SubmitHandler, useForm, ValidationMode, useFormState } from "react-hook-form";
 
 // Find a way to get PrmFormInput dinamicaly
 
@@ -11,13 +11,6 @@ interface PrmFormBuilderEntryObject {
   mode: keyof ValidationMode,
   children?: any
 }
-
-// Components mark
-// PRMSubmit
-// PRMInput
-
-export const PRMInputMark = { ...{ isPRMInputComponent: true } };
-export const PRMSubmitMark = { ...{ isPRMSubmitComponent: true } };
 
 export const FormBuilder = ({ onSubmit, defaultValues, mode, children }: PrmFormBuilderEntryObject) => {
   const {

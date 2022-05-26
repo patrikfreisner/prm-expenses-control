@@ -2,7 +2,6 @@ import React, { ReactElement } from "react";
 import { Control, Controller, RegisterOptions } from "react-hook-form";
 import { TextField } from '@mui/material';
 import NumberFormat, { NumberFormatPropsBase } from "react-number-format";
-import { AnyCnameRecord } from "dns";
 
 interface PrmInputTextObject {
   name: string,
