@@ -3,7 +3,7 @@ import React from 'react'
 import { Controller } from 'react-hook-form'
 import { ControlledSwitchInputProps } from './ControlledComponentConfig'
 
-export const ControlledSwitch = ({ name, rules: { validate, ...rules }, messages, controller: { control, watch, formState: { errors } }, value, ...props }: ControlledSwitchInputProps) => {
+export const ControlledSwitch = ({ name, rules: { validate, ...rules }, messages, controller: { control }, value, ...props }: ControlledSwitchInputProps) => {
     return (
         <Controller
             control={control}

@@ -1,17 +1,32 @@
 import { RegisterOptions, UseFormReturn } from "react-hook-form";
-import { BaseTextFieldProps } from '@mui/material';
-import { SwitchBaseProps } from "@mui/material/internal/SwitchBase";
+import { BaseTextFieldProps, SwitchProps, SxProps, TextField } from '@mui/material';
+import { NumberFormatProps } from "react-number-format";
+import { DatePickerProps } from "@mui/x-date-pickers";
 
 export interface ControlledTextFieldInputProps extends BaseTextFieldProps {
     name: string,
-    controller: UseFormReturn<any, any>,//UseFormReturn<any, any>,
+    controller: UseFormReturn<any, any>,
     rules: RegisterOptions,
     messages?: any
 }
 
-export interface ControlledSwitchInputProps extends SwitchBaseProps {
+export interface ControlledNumericFeldInputProps extends NumberFormatProps<BaseTextFieldProps> {
     name: string,
-    controller: UseFormReturn<any, any>,//UseFormReturn<any, any>,
+    controller: UseFormReturn<any, any>,
+    rules: RegisterOptions,
+    messages?: any
+}
+
+export interface ControlledDateInputProps extends Partial<DatePickerProps<BaseTextFieldProps, Date>> {
+    name: string,
+    controller: UseFormReturn<any, any>,
+    rules: RegisterOptions,
+    messages?: any
+}
+
+export interface ControlledSwitchInputProps extends SwitchProps {
+    name: string,
+    controller: UseFormReturn<any, any>,
     rules: RegisterOptions,
     messages?: any
 }

@@ -6,7 +6,7 @@ import { ControlledTextFieldInputProps, exeValidateConfirmPassword, errorHandler
 
 
 
-export const ControlledTextField = ({ name, rules: { validate, ...rules }, messages, controller: { control, watch, formState: { errors } }, ...props }: ControlledTextFieldInputProps) => {
+export const ControlledTextField = ({ name, rules: { validate, ...rules }, messages, controller: { control, watch, formState: { errors } }, ...props }: ControlledTextFieldInputProps) => {    
     exeValidateConfirmPassword(validate, watch);
 
     return (

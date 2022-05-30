@@ -48,13 +48,13 @@ class ExpenseDateTime extends Date {
 }
 
 export class Expense extends DynamoDBObject {
-    constructor(expense: { pk?: string, sk?: string, description?: string, value?: number, isPaid?: boolean, recurring?: boolean, recurringStart?: ExpenseDateTime, recurringEnd?: ExpenseDateTime, created_at?: Date, updated_at?: Date, category?: string }) {
+    constructor(expense: { pk?: string, sk?: string, description?: string, value?: number, isPaid?: boolean, isRecurring?: boolean, recurringStart?: ExpenseDateTime, recurringEnd?: ExpenseDateTime, created_at?: Date, updated_at?: Date, category?: string }) {
         super(expense.pk, expense.sk, expense.created_at, expense.updated_at);
         this.description = expense.description || '';
         this.value = expense.value || 0;
-        this.recurring = expense.recurring || false;
-        this.recurringStart = expense.recurring === true && !expense.recurringStart ? new ExpenseDateTime() : (new ExpenseDateTime(expense.recurringStart) || null);
-        this.recurringEnd = expense.recurring === true && !expense.recurringEnd ? new ExpenseDateTime("2999-01-01 00:00:01") : (new ExpenseDateTime(expense.recurringEnd) || null);
+        this.isRecurring = expense.isRecurring || false;
+        this.recurringStart = expense.isRecurring === true && !expense.recurringStart ? new ExpenseDateTime() : (new ExpenseDateTime(expense.recurringStart) || null);
+        this.recurringEnd = expense.isRecurring === true && !expense.recurringEnd ? new ExpenseDateTime("2999-01-01 00:00:01") : (new ExpenseDateTime(expense.recurringEnd) || null);
         this.isPaid = expense.isPaid || false;
         this.category = expense.category || "";
     }
@@ -62,15 +62,15 @@ export class Expense extends DynamoDBObject {
     description: string;
     value: number;
     isPaid: boolean;
-    recurring: boolean;
-    category: string;
+    isRecurring: boolean;
     recurringStart: ExpenseDateTime | null;
     recurringEnd: ExpenseDateTime | null;
+    category: string;
 
 
     // Recurring Expenses functions
     getTotalInstallment(): number {
-        if (this.recurring && this.recurringStart && this.recurringEnd) {
+        if (this.isRecurring && this.recurringStart && this.recurringEnd) {
             var months;
             months = (this.recurringEnd.getFullYear() - this.recurringStart.getFullYear()) * 12;
             months -= this.recurringStart.getMonth();
@@ -82,7 +82,7 @@ export class Expense extends DynamoDBObject {
     }
 
     getRemainingInstallment(): number {
-        if (this.recurring && this.recurringStart && this.recurringEnd) {
+        if (this.isRecurring && this.recurringStart && this.recurringEnd) {
             var _currentDate = new ExpenseDateTime();
             _currentDate.setMonth(_currentDate.getMonth() + 1);
             var months;
@@ -96,7 +96,7 @@ export class Expense extends DynamoDBObject {
     }
 
     getExpenseFullValue(): number {
-        if (this.recurring) {
+        if (this.isRecurring) {
             return this.value * this.getTotalInstallment();
         } else {
             return this.value;
@@ -104,7 +104,7 @@ export class Expense extends DynamoDBObject {
     }
 
     getExpenseRemainingFullValue(): number {
-        if (this.recurring) {
+        if (this.isRecurring) {
             return this.value * this.getRemainingInstallment();
         } else {
             return this.value;
