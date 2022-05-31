@@ -7,8 +7,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import brLocale from 'date-fns/locale/pt-BR'
+import { types } from 'util';
 
-export const ControlledDatePicker = ({ name, rules: { validate, ...rules }, messages, controller: { control, watch, formState: { errors }, setError }, datePickerOptions, ...props }: ControlledDateInputProps) => {
+export const ControlledDatePicker = ({ name, rules: { validate, ...rules }, messages, controller: { control, formState: { errors }, setError }, datePickerOptions, ...props }: ControlledDateInputProps) => {
     return (
         <>
             <Controller
@@ -20,13 +21,9 @@ export const ControlledDatePicker = ({ name, rules: { validate, ...rules }, mess
                         <DatePicker
                             {...field}
                             {...datePickerOptions}
-                            onError={(error) => {
-                                console.log(error);
-                                setError(name, { message: error, type: "datePickerError" } as ErrorOption);
-                            }}
                             renderInput={(params) => <TextField
-                                {...props}
                                 {...params}
+                                {...props}
                                 {...errorHandler({
                                     control: typoHandler(control?._fields, name)?._f,
                                     type: typoHandler(errors, name)?.type,

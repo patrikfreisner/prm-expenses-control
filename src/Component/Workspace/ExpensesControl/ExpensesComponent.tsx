@@ -1,6 +1,7 @@
 import { Button, FormControlLabel, Grid, TextField, Typography } from "@mui/material"
+import { CalendarPicker, CalendarPickerView } from "@mui/x-date-pickers"
 import React, { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Validate } from "react-hook-form"
 import { ControlledDatePicker } from "../../PrimumComponents/FormBuilderV2/ControlledDatePicker"
 import { ControlledNumericField } from "../../PrimumComponents/FormBuilderV2/ControlledNumericField"
 import { ControlledSwitch } from "../../PrimumComponents/FormBuilderV2/ControlledSwitch"
@@ -36,13 +37,20 @@ const ExpensesComponent = () => {
   const watchForRecurringStart = formController.watch("recurring_start");
   const watchForRecurringEnd = formController.watch("recurring_end");
 
+  const validateMinDate: Validate<any> = () => {
+    if (watchForRecurringStart <= watchForRecurringEnd) return true;
+    return false;
+  }
+
+  const calendarPickView: readonly CalendarPickerView[] = ["month", "year"];
+
   return (
     <>
       {/* <Grid className="expensesLaneContainer" container spacing={2}>
         <ExpenseLaneComponent />
       </Grid> */}
       <Grid container spacing={2}>
-        <Typography variant="h3" align="center">My new form</Typography>
+        {/* <Typography variant="h3" align="center">My new form</Typography> */}
         <Grid item xs={12}>
           <ControlledTextField className="formInput" label={"Descrição"} controller={formController} name="description" rules={{ required: true }} />
         </Grid>
@@ -72,22 +80,32 @@ const ExpensesComponent = () => {
             <Grid item xs={12} md={6}>
               <ControlledDatePicker
                 className="formInput"
-                label={"Inicio da recorrencia: "}
+                label="Inicio da recorrencia: "
                 controller={formController}
                 name={"recurring_start"}
                 rules={{ required: true }}
+                datePickerOptions={{
+                  views: { ...calendarPickView }
+                }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <ControlledDatePicker
                 className="formInput"
-                label={"Fim da recorrencia: "}
+                label="Fim da recorrencia: "
                 datePickerOptions={{
-                  minDate: watchForRecurringStart
+                  minDate: watchForRecurringStart,
+                  views: { ...calendarPickView }
                 }}
                 controller={formController}
                 name={"recurring_end"}
-                rules={{ required: true }}
+                rules={{
+                  required: true,
+                  validate: validateMinDate
+                }}
+                messages={{
+                  validate: "Data não pode ser menor que " + watchForRecurringStart.toLocaleDateString()
+                }}
               />
             </Grid>
           </>}
