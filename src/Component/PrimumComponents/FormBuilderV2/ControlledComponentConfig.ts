@@ -17,11 +17,12 @@ export interface ControlledNumericFeldInputProps extends NumberFormatProps<BaseT
     messages?: any
 }
 
-export interface ControlledDateInputProps extends Partial<DatePickerProps<BaseTextFieldProps, Date>> {
+export interface ControlledDateInputProps extends BaseTextFieldProps {
     name: string,
     controller: UseFormReturn<any, any>,
     rules: RegisterOptions,
-    messages?: any
+    messages?: any,
+    datePickerOptions?: Partial<DatePickerProps<BaseTextFieldProps, Date>>
 }
 
 export interface ControlledSwitchInputProps extends SwitchProps {

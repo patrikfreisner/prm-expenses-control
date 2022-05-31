@@ -1,5 +1,5 @@
 import { Button, FormControlLabel, Grid, TextField, Typography } from "@mui/material"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { ControlledDatePicker } from "../../PrimumComponents/FormBuilderV2/ControlledDatePicker"
 import { ControlledNumericField } from "../../PrimumComponents/FormBuilderV2/ControlledNumericField"
@@ -10,32 +10,31 @@ import ExpenseSpeedDialComponent from "./ExpenseSpeedDialComponent/ExpenseSpeedD
 import "./ExpensesStyle.css"
 
 const ExpensesComponent = () => {
-  let date = new Date();
-  date.setDate(date.getDate() + 2);
 
   const formController = useForm({
     defaultValues: {
       description: "Desc",
       value: 123.98,
-      isRecurring: true,
-      recurring_start: date,
-      recurring_end: date.setDate(date.getDate() + 1)
+      isRecurring: false,
+      recurring_start: new Date(),
+      recurring_end: new Date()
     },
     mode: "all"
   });
+
 
   const [isFormLoading, setIsFormLoading] = useState(false);
   const onSubmitHandler = (values: any) => {
     setIsFormLoading(true);
     setTimeout(() => {
       setIsFormLoading(false);
-      console.log("Submitted!");
       console.log(values);
-    }, 1000);
+    }, 500);
   }
 
-
-  const [value, setValue] = React.useState<Date | null>(null);
+  const watchForIsRecurring = formController.watch("isRecurring");
+  const watchForRecurringStart = formController.watch("recurring_start");
+  const watchForRecurringEnd = formController.watch("recurring_end");
 
   return (
     <>
@@ -68,24 +67,30 @@ const ExpensesComponent = () => {
             }
           />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <ControlledDatePicker
-            className="formInput"
-            label={"Inicio da recorrencia: "}
-            controller={formController}
-            name={"recurring_start"}
-            rules={{ required: true }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <ControlledDatePicker
-            className="formInput"
-            label={"Fim da recorrencia: "}
-            controller={formController}
-            name={"recurring_end"}
-            rules={{ required: true }}
-          />
-        </Grid>
+        {watchForIsRecurring &&
+          <>
+            <Grid item xs={12} md={6}>
+              <ControlledDatePicker
+                className="formInput"
+                label={"Inicio da recorrencia: "}
+                controller={formController}
+                name={"recurring_start"}
+                rules={{ required: true }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <ControlledDatePicker
+                className="formInput"
+                label={"Fim da recorrencia: "}
+                datePickerOptions={{
+                  minDate: watchForRecurringStart
+                }}
+                controller={formController}
+                name={"recurring_end"}
+                rules={{ required: true }}
+              />
+            </Grid>
+          </>}
         <Grid item xs={12}>
           <Button variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Submit </Button>
         </Grid>
