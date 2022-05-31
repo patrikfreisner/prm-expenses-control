@@ -1,6 +1,5 @@
 import { Button, FormControlLabel, Grid, TextField, Typography } from "@mui/material"
-import { CalendarPicker, CalendarPickerView } from "@mui/x-date-pickers"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { useForm, Validate } from "react-hook-form"
 import { ControlledDatePicker } from "../../PrimumComponents/FormBuilderV2/ControlledDatePicker"
 import { ControlledNumericField } from "../../PrimumComponents/FormBuilderV2/ControlledNumericField"
@@ -11,14 +10,15 @@ import ExpenseSpeedDialComponent from "./ExpenseSpeedDialComponent/ExpenseSpeedD
 import "./ExpensesStyle.css"
 
 const ExpensesComponent = () => {
+  const _date: Date = new Date();
 
   const formController = useForm({
     defaultValues: {
-      description: "Desc",
-      value: 123.98,
+      description: "",
+      value: "",
       isRecurring: false,
-      recurring_start: new Date(),
-      recurring_end: new Date()
+      recurring_start: _date,
+      recurring_end: _date
     },
     mode: "all"
   });
@@ -38,11 +38,9 @@ const ExpensesComponent = () => {
   const watchForRecurringEnd = formController.watch("recurring_end");
 
   const validateMinDate: Validate<any> = () => {
-    if (watchForRecurringStart <= watchForRecurringEnd) return true;
+    if (watchForRecurringStart < watchForRecurringEnd) return true;
     return false;
   }
-
-  const calendarPickView: readonly CalendarPickerView[] = ["month", "year"];
 
   return (
     <>
@@ -50,7 +48,6 @@ const ExpensesComponent = () => {
         <ExpenseLaneComponent />
       </Grid> */}
       <Grid container spacing={2}>
-        {/* <Typography variant="h3" align="center">My new form</Typography> */}
         <Grid item xs={12}>
           <ControlledTextField className="formInput" label={"Descrição"} controller={formController} name="description" rules={{ required: true }} />
         </Grid>
@@ -66,7 +63,7 @@ const ExpensesComponent = () => {
             prefix="R$ "
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={2} lg={2}>
           <FormControlLabel
             label={"Recorrente?"}
             labelPlacement={"start"}
@@ -77,40 +74,43 @@ const ExpensesComponent = () => {
         </Grid>
         {watchForIsRecurring &&
           <>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5} lg={5}>
               <ControlledDatePicker
+                name={"recurring_start"}
+                controller={formController}
                 className="formInput"
                 label="Inicio da recorrencia: "
-                controller={formController}
-                name={"recurring_start"}
                 rules={{ required: true }}
                 datePickerOptions={{
-                  views: { ...calendarPickView }
+                  views: ["month", "year"]
                 }}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5} lg={5}>
               <ControlledDatePicker
+                name={"recurring_end"}
+                controller={formController}
                 className="formInput"
                 label="Fim da recorrencia: "
                 datePickerOptions={{
                   minDate: watchForRecurringStart,
-                  views: { ...calendarPickView }
+                  views: ["month", "year"]
                 }}
-                controller={formController}
-                name={"recurring_end"}
                 rules={{
                   required: true,
                   validate: validateMinDate
                 }}
                 messages={{
-                  validate: "Data não pode ser menor que " + watchForRecurringStart.toLocaleDateString()
+                  validate: watchForRecurringStart ? "Data não pode ser menor que " + (
+                    (watchForRecurringStart.getMonth() + 1).toString().length == 1 ?
+                      "0" + (watchForRecurringStart.getMonth() + 1) :
+                      (watchForRecurringStart.getMonth() + 1)) + "/" + watchForRecurringStart.getFullYear() : ""
                 }}
               />
             </Grid>
           </>}
         <Grid item xs={12}>
-          <Button variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Submit </Button>
+          <Button variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Criar despesa </Button>
         </Grid>
       </Grid>
       <ExpenseSpeedDialComponent />

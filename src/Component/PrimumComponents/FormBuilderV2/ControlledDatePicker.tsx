@@ -9,7 +9,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import brLocale from 'date-fns/locale/pt-BR'
 import { types } from 'util';
 
-export const ControlledDatePicker = ({ name, rules: { validate, ...rules }, messages, controller: { control, formState: { errors }, setError }, datePickerOptions, ...props }: ControlledDateInputProps) => {
+export const ControlledDatePicker = ({ name, rules: { validate, ...rules }, messages, controller: { control, formState: { errors } }, datePickerOptions, ...props }: ControlledDateInputProps) => {
     return (
         <>
             <Controller

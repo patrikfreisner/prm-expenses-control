@@ -11,11 +11,10 @@ export const ControlledNumericField = ({ name, rules: { validate, ...rules }, me
                 control={control}
                 name={name}
                 rules={{ validate, ...rules }}
-                render={({ field: { onChange, name, value } }) => {
+                render={({ field: { onChange, ...field } }) => {
                     return (
                         <NumberFormat
-                            name={name}
-                            value={value}
+                            {...field}
                             {...props}
                             {...mask}
                             {...errorHandler({
@@ -29,7 +28,8 @@ export const ControlledNumericField = ({ name, rules: { validate, ...rules }, me
                             decimalScale={2}
                             onValueChange={(values) => {
                                 onChange(values.value);
-                            }} />
+                            }}
+                        />
                     )
                 }}
             />
