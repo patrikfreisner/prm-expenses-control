@@ -11,7 +11,7 @@ export class DynamoDBObject {
     updated_at: Date;
 }
 
-class ExpenseDateTime extends Date {
+export class ExpenseDateTime extends Date {
     constructor(date?: string | Date | number) {
         if (date) {
             if (typeof date == "string") {

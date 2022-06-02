@@ -5,12 +5,16 @@ import ExpenseCardComponent from '../ExpenseCardComponent/ExpenseCardComponent'
 // Style file
 import './ExpenseLaneStyle.css'
 
-function ExpenseLaneComponent() {
+interface ExpenseLaneComponentParams {
+    name: string;
+}
+
+function ExpenseLaneComponent({ name }: ExpenseLaneComponentParams) {
     return (
         <>
             <Grid item xs={12} md={12} lg={4}>
                 <Box>
-                    <Typography variant={'h4'} textAlign={'center'}> Recorrente </Typography>
+                    <Typography variant={'h4'} textAlign={'center'}> {name} </Typography>
                     <Stack direction={'row'} justifyContent={'space-around'}>
                         <Box >
                             <Typography variant='h5' textAlign={'center'}> Itens </Typography>

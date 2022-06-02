@@ -8,7 +8,9 @@ import Slide, { SlideProps } from '@mui/material/Slide'
 
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import EventIcon from '@mui/icons-material/Event';
-import { Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Typography } from '@mui/material';
+import { ExpenseInsertUpdateComponent } from '../ExpenseInsertUpdateComponent/ExpenseInsertUpdateComponent';
 
 const actions = [
     { icon: <NoteAddIcon />, name: 'Nova despesa' },
@@ -30,7 +32,7 @@ const ExpenseSpeedDialComponent = () => {
                 <Backdrop open={open} />
                 <SpeedDial
                     ariaLabel="SpeedDial controlled open example"
-                    sx={{ position: 'absolute', bottom: 16, right: 16 }}
+                    sx={{ position: 'fixed', bottom: 16, right: 16 }}
                     icon={<SpeedDialIcon />}
                     onClose={handleClose}
                     onOpen={handleOpen}
@@ -49,20 +51,32 @@ const ExpenseSpeedDialComponent = () => {
             <Dialog
                 open={openDialog}
                 keepMounted
-                onClose={handleClose}
-                aria-describedby="alert-dialog-slide-description"
+                onClose={handleCloseDialog}
             >
-                <DialogTitle>{"Use Google's location service?"}</DialogTitle>
+                <DialogTitle align='center'>
+                    <Typography variant='h4'>
+                        Cadastrar nova despesa!
+                    </Typography>
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleCloseDialog}
+                        sx={{
+                            position: 'absolute',
+                            right: 16,
+                            top: 16,
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
+                    {/* <DialogContentText id="alert-dialog-slide-description">
                         Let Google help apps determine location. This means sending anonymous
                         location data to Google, even when no apps are running.
-                    </DialogContentText>
+                    </DialogContentText> */}
+
+                    <ExpenseInsertUpdateComponent />
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog}>Disagree</Button>
-                    <Button onClick={handleCloseDialog}>Agree</Button>
-                </DialogActions>
             </Dialog>
         </>
 
