@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material'
+import { TextField, Tooltip } from '@mui/material'
 import React from 'react'
 import { Controller, ErrorOption } from 'react-hook-form'
 import { ControlledDateInputProps, errorHandler, typoHandler } from './ControlledComponentConfig'
@@ -21,14 +21,15 @@ export const ControlledDatePicker = ({ name, rules: { validate, ...rules }, mess
                         <DatePicker
                             {...field}
                             {...datePickerOptions}
-                            renderInput={(params) => <TextField
-                                {...params}
-                                {...props}
-                                {...errorHandler({
-                                    control: typoHandler(control?._fields, name)?._f,
-                                    type: typoHandler(errors, name)?.type,
-                                    messages: messages
-                                })} />
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                    {...props}
+                                    {...errorHandler({
+                                        control: typoHandler(control?._fields, name)?._f,
+                                        type: typoHandler(errors, name)?.type,
+                                        messages: messages
+                                    })} />
                             }
                         />
                     </LocalizationProvider>

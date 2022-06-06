@@ -1,11 +1,10 @@
 import { AxiosResponse } from 'axios';
 import React, { createContext, useState, useContext, useEffect, useMemo } from 'react'
 import { Expense } from '../Class/ExpenseClasses';
-import { FixedExpense } from '../Class/fixed-expense';
-import { RecurringExpense } from '../Class/recurring-expense';
-import { VariableExpense } from '../Class/variable-expense';
-import { queryItems } from '../Services/InvokeAWS/InvokeBaseDynamoDBAPI';
+import { queryItems, createItem } from '../Services/InvokeAWS/InvokeBaseDynamoDBAPI';
 import { useLoginContext } from './LoginContext';
+
+const TABLE = "PRMDB001";
 
 interface ExpensesInterface {
     expensesValues: Array<Expense>,
@@ -36,8 +35,8 @@ export const useExpensesContext = () => {
 
     const { userData } = useLoginContext();
 
-    function getUserExpenses(): Promise<AxiosResponse<any, any>> {
-        const response = queryItems("PRMDB001", {
+    function getUserExpenses(): Promise<AxiosResponse<Expense, any>> {
+        const response = queryItems(TABLE, {
             KeyConditionExpression: '#pk = :pk',
             ExpressionAttributeNames: {
                 "#pk": "pk"
@@ -49,6 +48,18 @@ export const useExpensesContext = () => {
         response.then((response) => {
             setExpensesValues(response.data.Items);
         });
+        return response;
+    }
+
+    function createExpenses(values: Partial<Expense>): Promise<AxiosResponse<any, any>> {
+        const response = createItem(TABLE, {
+            Item: {
+                ...values,
+                pk: "",
+                sk: ""
+            }
+        });
+
         return response;
     }
 

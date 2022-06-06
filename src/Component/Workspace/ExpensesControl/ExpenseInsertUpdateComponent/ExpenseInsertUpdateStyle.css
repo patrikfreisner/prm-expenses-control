@@ -1,0 +1,11 @@
+.form-action-button-container {
+    justify-content: flex-end;
+}
+
+.form-action-button {
+    width: 100%;
+}
+
+.main-form-container {
+    padding-top: 5px;
+}

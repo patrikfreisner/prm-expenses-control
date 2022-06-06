@@ -1,4 +1,5 @@
-import { Button, FormControlLabel, Grid, TextField, Typography } from "@mui/material"
+import { Button, FormControlLabel, Grid, TextField, Tooltip, Typography } from "@mui/material"
+import { Box } from "@mui/system"
 import React, { useState } from "react"
 import { useForm, Validate } from "react-hook-form"
 import { ExpenseDateTime } from "../../../../Class/ExpenseClasses"
@@ -7,8 +8,12 @@ import { ControlledNumericField } from "../../../PrimumComponents/FormBuilderV2/
 import { ControlledSwitch } from "../../../PrimumComponents/FormBuilderV2/ControlledSwitch"
 import { ControlledTextField } from "../../../PrimumComponents/FormBuilderV2/ControlledTextField"
 
+import "./ExpenseInsertUpdateStyle.css"
+
 export const ExpenseInsertUpdateComponent = () => {
     const _date: ExpenseDateTime = new ExpenseDateTime();
+    let _maxDateRange: ExpenseDateTime = new ExpenseDateTime();
+    _maxDateRange.setFullYear(_maxDateRange.getFullYear() + 1);
 
     const formController = useForm({
         defaultValues: {
@@ -42,9 +47,15 @@ export const ExpenseInsertUpdateComponent = () => {
 
     return (
         <>
-            <Grid container spacing={2}>
+            <Grid className="main-form-container" container spacing={2}>
                 <Grid item xs={12}>
-                    <ControlledTextField className="formInput" label={"Descrição"} controller={formController} name="description" rules={{ required: true }} />
+                    <ControlledTextField
+                        className="formInput"
+                        label={"Descrição"}
+                        controller={formController}
+                        name="description"
+                        rules={{ required: true }}
+                        autoComplete="false" />
                 </Grid>
                 <Grid item xs={12}>
                     <ControlledNumericField
@@ -56,6 +67,7 @@ export const ExpenseInsertUpdateComponent = () => {
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="R$ "
+                        autoComplete="false"
                     />
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
@@ -77,8 +89,10 @@ export const ExpenseInsertUpdateComponent = () => {
                                 label="Inicio da recorrencia: "
                                 rules={{ required: true }}
                                 datePickerOptions={{
-                                    views: ["month", "year"]
+                                    views: ["month", "year"],
+                                    disabled: true
                                 }}
+                                disabled={true}
                             />
                         </Grid>
                         <Grid item xs={12} md={6} lg={6}>
@@ -89,6 +103,7 @@ export const ExpenseInsertUpdateComponent = () => {
                                 label="Fim da recorrencia: "
                                 datePickerOptions={{
                                     minDate: watchForRecurringStart,
+                                    maxDate: _maxDateRange,
                                     views: ["month", "year"]
                                 }}
                                 rules={{
@@ -104,8 +119,8 @@ export const ExpenseInsertUpdateComponent = () => {
                             />
                         </Grid>
                     </>}
-                <Grid item xs={12}>
-                    <Button variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Criar despesa </Button>
+                <Grid className="form-action-button-container" item xs={12}>
+                    <Button className="form-action-button" variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Criar despesa </Button>
                 </Grid>
             </Grid>
         </>

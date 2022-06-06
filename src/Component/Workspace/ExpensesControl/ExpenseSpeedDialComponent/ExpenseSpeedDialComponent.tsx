@@ -53,9 +53,9 @@ const ExpenseSpeedDialComponent = () => {
                 keepMounted
                 onClose={handleCloseDialog}
             >
-                <DialogTitle align='center'>
-                    <Typography variant='h4'>
-                        Cadastrar nova despesa!
+                <DialogTitle align='left'>
+                    <Typography variant='h5'>
+                        Nova despesa
                     </Typography>
                     <IconButton
                         aria-label="close"

@@ -4,7 +4,7 @@ import { Controller } from 'react-hook-form';
 import NumberFormat from 'react-number-format';
 import { ControlledNumericFeldInputProps, errorHandler, typoHandler } from './ControlledComponentConfig'
 
-export const ControlledNumericField = ({ name, rules: { validate, ...rules }, messages, controller: { control, watch, formState: { errors } }, mask, ...props }: ControlledNumericFeldInputProps) => {
+export const ControlledNumericField = ({ name, rules: { validate, ...rules }, messages, controller: { control, watch, formState: { errors } }, mask, inputProps, ...props }: ControlledNumericFeldInputProps) => {
     return (
         <>
             <Controller
@@ -22,6 +22,10 @@ export const ControlledNumericField = ({ name, rules: { validate, ...rules }, me
                                 type: typoHandler(errors, name)?.type,
                                 messages: messages
                             })}
+                            inputProps={{
+                                inputMode: 'decimal',
+                                ...inputProps
+                            }}
                             customInput={TextField}
                             isNumericString={true}
                             fixedDecimalScale={true}
