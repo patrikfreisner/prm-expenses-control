@@ -17,7 +17,7 @@ interface ExpenseInsertUpdateComponentParam {
     formInitialValue?: any
 }
 
-export const ExpenseInsertUpdateComponent = ({ formInitialValue }: ExpenseInsertUpdateComponentParam) => {
+export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: ExpenseInsertUpdateComponentParam) => {
     const { createExpenses } = useExpensesContext();
 
     const _date: ExpenseDateTime = new ExpenseDateTime();
@@ -90,7 +90,6 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue }: ExpenseInsert
 
     return (
         <>
-            <AlertComponent severity={"success"} />
             <Grid className="main-form-container" container spacing={2}>
                 <Grid item xs={12}>
                     <ControlledTextField
@@ -119,9 +118,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue }: ExpenseInsert
                         label={"Recorrente?"}
                         labelPlacement={"top"}
                         control={
-                            <Tooltip title="Indica que a despesa deve se manter por data fixa ou até ser marcada como parcela final.">
-                                <ControlledSwitch controller={formController} name="isRecurring" rules={{}} />
-                            </Tooltip>
+                            <ControlledSwitch controller={formController} name="isRecurring" rules={{}} />
                         }
                     />
                 </Grid>

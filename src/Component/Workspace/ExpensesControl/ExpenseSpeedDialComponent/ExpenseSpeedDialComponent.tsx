@@ -54,9 +54,7 @@ const ExpenseSpeedDialComponent = () => {
                 onClose={handleCloseDialog}
             >
                 <DialogTitle align='left'>
-                    <Typography variant='h5'>
-                        Nova despesa
-                    </Typography>
+                    Nova despesa
                     <IconButton
                         aria-label="close"
                         onClick={handleCloseDialog}
