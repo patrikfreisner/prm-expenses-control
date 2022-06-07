@@ -51,12 +51,17 @@ export const useExpensesContext = () => {
         return response;
     }
 
-    function createExpenses(values: Partial<Expense>): Promise<AxiosResponse<any, any>> {
+    function createExpenses(values: Expense): Promise<AxiosResponse<any, any>> {
+        values.pk = "USER#" + userData.sub;
         const response = createItem(TABLE, {
-            Item: {
-                ...values,
-                pk: "",
-                sk: ""
+            Item: values,
+            Expected: {
+                "pk": {
+                    Exists: false
+                },
+                "sk": {
+                    Exists: false
+                }
             }
         });
 
@@ -65,6 +70,7 @@ export const useExpensesContext = () => {
 
     return {
         expensesValues,
-        getUserExpenses
+        getUserExpenses,
+        createExpenses
     };
 }

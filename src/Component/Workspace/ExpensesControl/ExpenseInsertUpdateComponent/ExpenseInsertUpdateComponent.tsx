@@ -1,8 +1,11 @@
-import { Button, FormControlLabel, Grid, TextField, Tooltip, Typography } from "@mui/material"
+import { jsx } from "@emotion/react"
+import { Alert, Button, FormControlLabel, Grid, TextField, Tooltip, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import React, { useState } from "react"
 import { useForm, Validate } from "react-hook-form"
-import { ExpenseDateTime } from "../../../../Class/ExpenseClasses"
+import { JsxEmit } from "typescript"
+import { Expense, ExpenseDateTime } from "../../../../Class/ExpenseClasses"
+import { useExpensesContext } from "../../../../Context/ExpensesContext"
 import { ControlledDatePicker } from "../../../PrimumComponents/FormBuilderV2/ControlledDatePicker"
 import { ControlledNumericField } from "../../../PrimumComponents/FormBuilderV2/ControlledNumericField"
 import { ControlledSwitch } from "../../../PrimumComponents/FormBuilderV2/ControlledSwitch"
@@ -10,33 +13,66 @@ import { ControlledTextField } from "../../../PrimumComponents/FormBuilderV2/Con
 
 import "./ExpenseInsertUpdateStyle.css"
 
-export const ExpenseInsertUpdateComponent = () => {
+interface ExpenseInsertUpdateComponentParam {
+    formInitialValue?: any
+}
+
+export const ExpenseInsertUpdateComponent = ({ formInitialValue }: ExpenseInsertUpdateComponentParam) => {
+    const { createExpenses } = useExpensesContext();
+
     const _date: ExpenseDateTime = new ExpenseDateTime();
     let _maxDateRange: ExpenseDateTime = new ExpenseDateTime();
     _maxDateRange.setFullYear(_maxDateRange.getFullYear() + 1);
 
+    let initialValues = formInitialValue || {
+        description: "",
+        value: "",
+        isRecurring: false,
+        isFixed: false,
+        recurring_start: _date,
+        recurring_end: _date
+    };
+
     const formController = useForm({
-        defaultValues: {
-            description: "",
-            value: "",
-            isRecurring: false,
-            recurring_start: _date,
-            recurring_end: _date
-        },
+        defaultValues: initialValues,
         mode: "all"
     });
 
 
     const [isFormLoading, setIsFormLoading] = useState(false);
+    const [returnMessageInfo, setReturnMessageInfo] = useState("");
     const onSubmitHandler = (values: any) => {
         setIsFormLoading(true);
+        let expValues = new Expense(values);
+
+        expValues.sk = expValues.recurringStart?.getFullYear() + "#" + (
+            expValues.recurringStart ?
+                expValues.recurringStart?.getMonth().toString().length > 1 ?
+                    expValues.recurringStart?.getMonth() + 1 :
+                    "0" + (expValues.recurringStart?.getMonth() + 1).toString()
+                : 0) + "#" + expValues.getType() + "#" + new Date().getTime();
+
+        if (expValues.isRecurring == false) {
+            expValues.recurringStart = null;
+            expValues.recurringEnd = null;
+        }
+
+        setReturnMessageInfo("Despesa cadastrada com sucesso!");
+
         setTimeout(() => {
             setIsFormLoading(false);
-            console.log(values);
-        }, 500);
+            setReturnMessageInfo("");
+        }, 4000);
+
+        // createExpenses(expValues).then(() => {
+
+        // }).catch(() => {
+
+        // });
     }
 
     const watchForIsRecurring = formController.watch("isRecurring");
+    const watchForIsFixed = formController.watch("isFixed");
     const watchForRecurringStart = formController.watch("recurring_start");
     const watchForRecurringEnd = formController.watch("recurring_end");
 
@@ -45,8 +81,16 @@ export const ExpenseInsertUpdateComponent = () => {
         return false;
     }
 
+    const AlertComponent = ({ severity }: any): React.ReactElement => {
+        if (!returnMessageInfo) return <></>;
+        return (
+            <Alert severity={severity}>{returnMessageInfo}</Alert>
+        );
+    };
+
     return (
         <>
+            <AlertComponent severity={"success"} />
             <Grid className="main-form-container" container spacing={2}>
                 <Grid item xs={12}>
                     <ControlledTextField
@@ -70,15 +114,31 @@ export const ExpenseInsertUpdateComponent = () => {
                         autoComplete="false"
                     />
                 </Grid>
-                <Grid item xs={12} md={12} lg={12}>
+                <Grid item xs={12} md={6} lg={6}>
                     <FormControlLabel
                         label={"Recorrente?"}
-                        labelPlacement={"start"}
+                        labelPlacement={"top"}
                         control={
-                            <ControlledSwitch controller={formController} name="isRecurring" rules={{}} />
+                            <Tooltip title="Indica que a despesa deve se manter por data fixa ou até ser marcada como parcela final.">
+                                <ControlledSwitch controller={formController} name="isRecurring" rules={{}} />
+                            </Tooltip>
                         }
                     />
                 </Grid>
+                {watchForIsRecurring &&
+                    <>
+                        <Grid item xs={12} md={6} lg={6}>
+                            <FormControlLabel
+                                label={"Desp. Fixa?"}
+                                labelPlacement={"top"}
+                                control={
+                                    <Tooltip title="Despesas fixas são recorrencias sem data limite, como contas de luz, agua e outros afins!">
+                                        <ControlledSwitch controller={formController} name="isFixed" rules={{}} />
+                                    </Tooltip>
+                                }
+                            />
+                        </Grid>
+                    </>}
                 {watchForIsRecurring &&
                     <>
                         <Grid item xs={12} md={6} lg={6}>
@@ -95,29 +155,32 @@ export const ExpenseInsertUpdateComponent = () => {
                                 disabled={true}
                             />
                         </Grid>
-                        <Grid item xs={12} md={6} lg={6}>
-                            <ControlledDatePicker
-                                name={"recurring_end"}
-                                controller={formController}
-                                className="formInput"
-                                label="Fim da recorrencia: "
-                                datePickerOptions={{
-                                    minDate: watchForRecurringStart,
-                                    maxDate: _maxDateRange,
-                                    views: ["month", "year"]
-                                }}
-                                rules={{
-                                    required: true,
-                                    validate: validateMinDate
-                                }}
-                                messages={{
-                                    validate: watchForRecurringStart ? "Data não pode ser menor que " + (
-                                        (watchForRecurringStart.getMonth() + 1).toString().length == 1 ?
-                                            "0" + (watchForRecurringStart.getMonth() + 1) :
-                                            (watchForRecurringStart.getMonth() + 1)) + "/" + watchForRecurringStart.getFullYear() : ""
-                                }}
-                            />
-                        </Grid>
+                        {!watchForIsFixed &&
+                            <>
+                                <Grid item xs={12} md={6} lg={6}>
+                                    <ControlledDatePicker
+                                        name={"recurring_end"}
+                                        controller={formController}
+                                        className="formInput"
+                                        label="Fim da recorrencia: "
+                                        datePickerOptions={{
+                                            minDate: watchForRecurringStart,
+                                            maxDate: _maxDateRange,
+                                            views: ["month", "year"]
+                                        }}
+                                        rules={{
+                                            required: true,
+                                            validate: validateMinDate
+                                        }}
+                                        messages={{
+                                            validate: watchForRecurringStart ? "Data não pode ser menor que " + (
+                                                (watchForRecurringStart.getMonth() + 1).toString().length == 1 ?
+                                                    "0" + (watchForRecurringStart.getMonth() + 1) :
+                                                    (watchForRecurringStart.getMonth() + 1)) + "/" + watchForRecurringStart.getFullYear() : ""
+                                        }}
+                                    />
+                                </Grid>
+                            </>}
                     </>}
                 <Grid className="form-action-button-container" item xs={12}>
                     <Button className="form-action-button" variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Criar despesa </Button>

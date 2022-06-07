@@ -48,11 +48,12 @@ export class ExpenseDateTime extends Date {
 }
 
 export class Expense extends DynamoDBObject {
-    constructor(expense: { pk?: string, sk?: string, description?: string, value?: number, isPaid?: boolean, isRecurring?: boolean, recurringStart?: ExpenseDateTime, recurringEnd?: ExpenseDateTime, created_at?: Date, updated_at?: Date, category?: string }) {
+    constructor(expense: { pk?: string, sk?: string, description?: string, value?: number, isPaid?: boolean, isRecurring?: boolean, isFixed?: boolean, recurringStart?: ExpenseDateTime, recurringEnd?: ExpenseDateTime, created_at?: Date, updated_at?: Date, category?: string }) {
         super(expense.pk, expense.sk, expense.created_at, expense.updated_at);
         this.description = expense.description || '';
         this.value = expense.value || 0;
         this.isRecurring = expense.isRecurring || false;
+        this.isFixed = expense.isFixed || false;
         this.recurringStart = expense.isRecurring === true && !expense.recurringStart ? new ExpenseDateTime() : (new ExpenseDateTime(expense.recurringStart) || null);
         this.recurringEnd = expense.isRecurring === true && !expense.recurringEnd ? new ExpenseDateTime("2999-01-01 00:00:01") : (new ExpenseDateTime(expense.recurringEnd) || null);
         this.isPaid = expense.isPaid || false;
@@ -63,6 +64,7 @@ export class Expense extends DynamoDBObject {
     value: number;
     isPaid: boolean;
     isRecurring: boolean;
+    isFixed: boolean;
     recurringStart: ExpenseDateTime | null;
     recurringEnd: ExpenseDateTime | null;
     category: string;
@@ -108,6 +110,16 @@ export class Expense extends DynamoDBObject {
             return this.value * this.getRemainingInstallment();
         } else {
             return this.value;
+        }
+    }
+
+    getType(): string {
+        if (this.isFixed == true) {
+            return "FIXED_EXPENSE";
+        } else if (this.isFixed == false && this.isRecurring == true) {
+            return "RECURRING_EXPENSE";
+        } else {
+            return "VARIABLE_EXPENSE";
         }
     }
 

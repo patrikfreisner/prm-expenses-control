@@ -31,7 +31,7 @@ const ExpenseSpeedDialComponent = () => {
             <Box>
                 <Backdrop open={open} />
                 <SpeedDial
-                    ariaLabel="SpeedDial controlled open example"
+                    ariaLabel="Componente para cadastrar novas despesas"
                     sx={{ position: 'fixed', bottom: 16, right: 16 }}
                     icon={<SpeedDialIcon />}
                     onClose={handleClose}
@@ -70,11 +70,6 @@ const ExpenseSpeedDialComponent = () => {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    {/* <DialogContentText id="alert-dialog-slide-description">
-                        Let Google help apps determine location. This means sending anonymous
-                        location data to Google, even when no apps are running.
-                    </DialogContentText> */}
-
                     <ExpenseInsertUpdateComponent />
                 </DialogContent>
             </Dialog>
