@@ -6,21 +6,36 @@ import { useLoginContext } from './LoginContext';
 
 const TABLE = "PRMDB001";
 
+
+export interface EventEntryParams {
+    event_id?: string,
+    name: string,
+    message: string,
+    type: "success" | "error" | "info"
+}
+
 interface ExpensesInterface {
     expensesValues: Array<Expense>,
     setExpensesValues: Function,
+    dialogAlerts: Array<EventEntryParams>,
+    setDialogAlerts: Function
 }
+
+
 export const ExpensesContext = createContext(new Object() as ExpensesInterface)
 ExpensesContext.displayName = 'ExpensesContext'
 
 export const ExpensesProvider = ({ children }: any) => {
-    const [expensesValues, setExpensesValues] = useState(new Array<any>());
+    const [expensesValues, setExpensesValues] = useState(new Array<Expense>());
+    const [dialogAlerts, setDialogAlerts] = useState(new Array<EventEntryParams>());
 
     return (
         <ExpensesContext.Provider
             value={{
                 expensesValues,
-                setExpensesValues
+                setExpensesValues,
+                dialogAlerts,
+                setDialogAlerts
             }}>
             {children}
         </ExpensesContext.Provider>
@@ -30,10 +45,17 @@ export const ExpensesProvider = ({ children }: any) => {
 export const useExpensesContext = () => {
     const {
         expensesValues,
-        setExpensesValues
+        setExpensesValues,
+        dialogAlerts,
+        setDialogAlerts
     } = useContext<ExpensesInterface>(ExpensesContext);
 
     const { userData } = useLoginContext();
+
+    function defineNewAlertEvent(alertValue: EventEntryParams): void {
+        alertValue.event_id = "EVENT#" + alertValue.name + "#" + new Date().getTime();
+        setDialogAlerts(...dialogAlerts, alertValue);
+    }
 
     function getUserExpenses(): Promise<AxiosResponse<Expense, any>> {
         const response = queryItems(TABLE, {
@@ -71,6 +93,8 @@ export const useExpensesContext = () => {
     return {
         expensesValues,
         getUserExpenses,
-        createExpenses
+        createExpenses,
+        dialogAlerts,
+        defineNewAlertEvent
     };
 }

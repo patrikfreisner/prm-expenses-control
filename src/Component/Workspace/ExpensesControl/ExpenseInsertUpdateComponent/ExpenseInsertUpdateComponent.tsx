@@ -18,7 +18,7 @@ interface ExpenseInsertUpdateComponentParam {
 }
 
 export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: ExpenseInsertUpdateComponentParam) => {
-    const { createExpenses } = useExpensesContext();
+    const { createExpenses, defineNewAlertEvent } = useExpensesContext();
 
     const _date: ExpenseDateTime = new ExpenseDateTime();
     let _maxDateRange: ExpenseDateTime = new ExpenseDateTime();
@@ -40,7 +40,6 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
 
 
     const [isFormLoading, setIsFormLoading] = useState(false);
-    const [returnMessageInfo, setReturnMessageInfo] = useState("");
     const onSubmitHandler = (values: any) => {
         setIsFormLoading(true);
         let expValues = new Expense(values);
@@ -57,17 +56,20 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
             expValues.recurringEnd = null;
         }
 
-        setReturnMessageInfo("Despesa cadastrada com sucesso!");
+        defineNewAlertEvent({
+            name: "myNewName",
+            message: "bla bla bla bla texto texto texto",
+            type: "success"
+        });
 
-        setTimeout(() => {
-            setIsFormLoading(false);
-            setReturnMessageInfo("");
-        }, 4000);
-
-        // createExpenses(expValues).then(() => {
-
-        // }).catch(() => {
-
+        // createExpenses(expValues).then((response) => {
+        //     setIsFormLoading(false);
+        //     alert("Created successfully!");
+        //     console.log(response);
+        // }).catch((err) => {
+        //     setIsFormLoading(false);
+        //     alert("An error ocurred!");
+        //     console.warn(err);
         // });
     }
 
@@ -80,13 +82,6 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
         if (watchForRecurringStart <= watchForRecurringEnd) return true;
         return false;
     }
-
-    const AlertComponent = ({ severity }: any): React.ReactElement => {
-        if (!returnMessageInfo) return <></>;
-        return (
-            <Alert severity={severity}>{returnMessageInfo}</Alert>
-        );
-    };
 
     return (
         <>

@@ -7,6 +7,12 @@
     width: 100%;
 }
 
+.tstDivMain {
+    position: absolute;
+    top: 50px;
+    left: 0px;
+}
+
 @media (min-width:320px) and (max-width: 480px) {
 
     /* smartphones, iPhone, portrait 480x320 phones */
