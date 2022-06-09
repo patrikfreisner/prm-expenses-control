@@ -1,9 +1,7 @@
 import { jsx } from "@emotion/react"
 import { Alert, Button, FormControlLabel, Grid, TextField, Tooltip, Typography } from "@mui/material"
-import { Box } from "@mui/system"
 import React, { useState } from "react"
 import { useForm, Validate } from "react-hook-form"
-import { JsxEmit } from "typescript"
 import { Expense, ExpenseDateTime } from "../../../../Class/ExpenseClasses"
 import { useExpensesContext } from "../../../../Context/ExpensesContext"
 import { ControlledDatePicker } from "../../../PrimumComponents/FormBuilderV2/ControlledDatePicker"
@@ -58,9 +56,23 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
 
         defineNewAlertEvent({
             name: "myNewName",
-            message: "bla bla bla bla texto texto texto",
+            message: "bla bla bla bla texto texto texto 1",
             type: "success"
         });
+
+        defineNewAlertEvent({
+            name: "myNewName2",
+            message: "bla bla bla bla texto texto texto 2",
+            type: "success"
+        });
+
+        defineNewAlertEvent({
+            name: "myNewName3",
+            message: "bla bla bla bla texto texto texto 3 ",
+            type: "success"
+        });
+
+        setIsFormLoading(false);
 
         // createExpenses(expValues).then((response) => {
         //     setIsFormLoading(false);

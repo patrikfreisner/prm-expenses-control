@@ -7,17 +7,23 @@ import { useLoginContext } from './LoginContext';
 const TABLE = "PRMDB001";
 
 
-export interface EventEntryParams {
-    event_id?: string,
-    name: string,
-    message: string,
-    type: "success" | "error" | "info"
+export class EventsEntry {
+    constructor(name: string, message: string, type: "success" | "error" | "info") {
+        this.name = name;
+        this.message = message;
+        this.type = type;
+    }
+
+    event_id?: string;
+    name: string;
+    message: string;
+    type: "success" | "error" | "info";
 }
 
 interface ExpensesInterface {
     expensesValues: Array<Expense>,
     setExpensesValues: Function,
-    dialogAlerts: Array<EventEntryParams>,
+    dialogAlerts: EventsEntry[],
     setDialogAlerts: Function
 }
 
@@ -27,7 +33,7 @@ ExpensesContext.displayName = 'ExpensesContext'
 
 export const ExpensesProvider = ({ children }: any) => {
     const [expensesValues, setExpensesValues] = useState(new Array<Expense>());
-    const [dialogAlerts, setDialogAlerts] = useState(new Array<EventEntryParams>());
+    const [dialogAlerts, setDialogAlerts] = useState(new Array<EventsEntry>());
 
     return (
         <ExpensesContext.Provider
@@ -52,9 +58,13 @@ export const useExpensesContext = () => {
 
     const { userData } = useLoginContext();
 
-    function defineNewAlertEvent(alertValue: EventEntryParams): void {
-        alertValue.event_id = "EVENT#" + alertValue.name + "#" + new Date().getTime();
-        setDialogAlerts(...dialogAlerts, alertValue);
+    function defineNewAlertEvent(eventParam: EventsEntry): void {
+        eventParam.event_id = "EVENT#" + eventParam.name + "#" + new Date().getTime();
+        setDialogAlerts([...dialogAlerts, eventParam]);
+    }
+
+    function removeAlertEvent(eventParam: EventsEntry): void {
+        setDialogAlerts([...dialogAlerts.filter((event) => { return event.event_id !== eventParam.event_id })]);
     }
 
     function getUserExpenses(): Promise<AxiosResponse<Expense, any>> {
@@ -95,6 +105,7 @@ export const useExpensesContext = () => {
         getUserExpenses,
         createExpenses,
         dialogAlerts,
-        defineNewAlertEvent
+        defineNewAlertEvent,
+        removeAlertEvent
     };
 }
