@@ -4,20 +4,17 @@ import Box from '@mui/material/Box';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
-import Slide, { SlideProps } from '@mui/material/Slide'
 
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import EventIcon from '@mui/icons-material/Event';
 import CloseIcon from '@mui/icons-material/Close';
 import { Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Typography } from '@mui/material';
 import { ExpenseInsertUpdateComponent } from '../ExpenseInsertUpdateComponent/ExpenseInsertUpdateComponent';
-
-const actions = [
-    { icon: <NoteAddIcon />, name: 'Nova despesa' },
-    { icon: <EventIcon />, name: 'Iniciar novo Mês' },
-];
+import { useEventHandlerContext } from '../../../../Context/EventHandlerContext';
 
 const ExpenseSpeedDialComponent = () => {
+    const { addAlertEvent } = useEventHandlerContext();
+
     const [open, setOpen] = React.useState(false);
     const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -25,6 +22,25 @@ const ExpenseSpeedDialComponent = () => {
     const handleClose = () => { setOpen(false); };
     const handleCloseAction = () => setOpenDialog(true);
     const handleCloseDialog = () => { setOpenDialog(false); setOpen(false) };
+
+    const actions = [
+        {
+            icon: <NoteAddIcon />,
+            name: 'Nova despesa',
+            handlerAction: handleCloseAction
+        },
+        {
+            icon: <EventIcon />,
+            name: 'Iniciar novo Mês',
+            handlerAction: () => {
+                addAlertEvent({
+                    name: "TESTE",
+                    message: "tes tes tes te te te",
+                    type: 'info'
+                })
+            }
+        },
+    ];
 
     return (
         <>
@@ -43,7 +59,7 @@ const ExpenseSpeedDialComponent = () => {
                             key={action.name}
                             icon={action.icon}
                             tooltipTitle={action.name}
-                            onClick={handleCloseAction}
+                            onClick={action.handlerAction}
                         />
                     ))}
                 </SpeedDial>

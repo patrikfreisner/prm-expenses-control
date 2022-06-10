@@ -3,6 +3,7 @@ import { Alert, Button, FormControlLabel, Grid, TextField, Tooltip, Typography }
 import React, { useState } from "react"
 import { useForm, Validate } from "react-hook-form"
 import { Expense, ExpenseDateTime } from "../../../../Class/ExpenseClasses"
+import { useEventHandlerContext } from "../../../../Context/EventHandlerContext"
 import { useExpensesContext } from "../../../../Context/ExpensesContext"
 import { ControlledDatePicker } from "../../../PrimumComponents/FormBuilderV2/ControlledDatePicker"
 import { ControlledNumericField } from "../../../PrimumComponents/FormBuilderV2/ControlledNumericField"
@@ -16,7 +17,8 @@ interface ExpenseInsertUpdateComponentParam {
 }
 
 export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: ExpenseInsertUpdateComponentParam) => {
-    const { createExpenses, defineNewAlertEvent } = useExpensesContext();
+    const { createExpenses } = useExpensesContext();
+    const { addAlertEvent } = useEventHandlerContext();
 
     const _date: ExpenseDateTime = new ExpenseDateTime();
     let _maxDateRange: ExpenseDateTime = new ExpenseDateTime();
@@ -54,35 +56,21 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
             expValues.recurringEnd = null;
         }
 
-        defineNewAlertEvent({
-            name: "myNewName",
-            message: "bla bla bla bla texto texto texto 1",
-            type: "success"
+        createExpenses(expValues).then((response) => {
+            setIsFormLoading(false);
+            addAlertEvent({
+                name: "EXPENSE-CREATION-SUCCESS",
+                message: "Despesa cadastrada com sucesso!",
+                type: "success"
+            });
+        }).catch((err) => {
+            setIsFormLoading(false);
+            addAlertEvent({
+                name: "EXPENSE-CREATION-FAILED",
+                message: "Não foi possivel cadastrar despesa!",
+                type: "error"
+            });
         });
-
-        defineNewAlertEvent({
-            name: "myNewName2",
-            message: "bla bla bla bla texto texto texto 2",
-            type: "success"
-        });
-
-        defineNewAlertEvent({
-            name: "myNewName3",
-            message: "bla bla bla bla texto texto texto 3 ",
-            type: "success"
-        });
-
-        setIsFormLoading(false);
-
-        // createExpenses(expValues).then((response) => {
-        //     setIsFormLoading(false);
-        //     alert("Created successfully!");
-        //     console.log(response);
-        // }).catch((err) => {
-        //     setIsFormLoading(false);
-        //     alert("An error ocurred!");
-        //     console.warn(err);
-        // });
     }
 
     const watchForIsRecurring = formController.watch("isRecurring");
