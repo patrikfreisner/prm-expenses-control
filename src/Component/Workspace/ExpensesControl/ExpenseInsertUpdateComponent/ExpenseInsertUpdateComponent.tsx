@@ -1,6 +1,5 @@
-import { jsx } from "@emotion/react"
-import { Alert, Button, FormControlLabel, Grid, TextField, Tooltip, Typography } from "@mui/material"
-import React, { useState } from "react"
+import { Button, FormControlLabel, Grid, TextField, Tooltip, Typography } from "@mui/material"
+import React, { useEffect, useState } from "react"
 import { useForm, Validate } from "react-hook-form"
 import { Expense, ExpenseDateTime } from "../../../../Class/ExpenseClasses"
 import { useEventHandlerContext } from "../../../../Context/EventHandlerContext"
@@ -33,11 +32,11 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
         recurring_end: _date
     };
 
+
     const formController = useForm({
         defaultValues: initialValues,
         mode: "all"
     });
-
 
     const [isFormLoading, setIsFormLoading] = useState(false);
     const onSubmitHandler = (values: any) => {
@@ -63,7 +62,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
                 message: "Despesa cadastrada com sucesso!",
                 type: "success"
             });
-        }).catch((err) => {
+        }).catch(() => {
             setIsFormLoading(false);
             addAlertEvent({
                 name: "EXPENSE-CREATION-FAILED",

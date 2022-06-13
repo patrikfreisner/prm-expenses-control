@@ -18,8 +18,8 @@ interface EventHandlerInterface {
     setDialogAlerts: Function
 }
 
-export const EventHandlerContext = createContext(new Object() as EventHandlerInterface)
-EventHandlerContext.displayName = 'EventHandlerContext'
+export const EventHandlerContext = createContext(new Object() as EventHandlerInterface);
+EventHandlerContext.displayName = 'EventHandlerContext';
 
 export const EventHandlerProvider = ({ children }: any) => {
     const [dialogAlerts, setDialogAlerts] = useState(Array<EventsEntry>());

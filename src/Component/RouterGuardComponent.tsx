@@ -12,7 +12,7 @@ import { LoginComponent } from './Authentication/Login/LoginComponent';
 import { RegisterComponent } from './Authentication/Regiser/RegisterComponent';
 import { RegisterProvider } from '../Context/RegisterContext';
 import { ExpensesProvider } from '../Context/ExpensesContext';
-import { EventHandlerContext } from '../Context/EventHandlerContext';
+import { EventHandlerProvider } from '../Context/EventHandlerContext';
 
 export const ApplicationRouterConfig = () => {
     return (
@@ -22,9 +22,9 @@ export const ApplicationRouterConfig = () => {
                     <Route path='' element={<MainPageComponent />} >
                         <Route path='workspace' element={
                             <ExpensesProvider>
-                                <EventHandlerContext>
+                                <EventHandlerProvider>
                                     <WorkspaceComponent />
-                                </EventHandlerContext>
+                                </EventHandlerProvider>
                             </ExpensesProvider>
                         }>
                             <Route path='expenses' element={<ExpensesComponent />} />

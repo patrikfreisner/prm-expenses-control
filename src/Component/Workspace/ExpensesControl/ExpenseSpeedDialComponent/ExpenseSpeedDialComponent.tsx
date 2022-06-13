@@ -66,8 +66,8 @@ const ExpenseSpeedDialComponent = () => {
             </Box>
             <Dialog
                 open={openDialog}
-                keepMounted
                 onClose={handleCloseDialog}
+            // keepMounted  // dialog still exists when focussed out; I've take it off because form doesn't unregister itself;
             >
                 <DialogTitle align='left'>
                     Nova despesa
