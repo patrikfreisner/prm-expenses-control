@@ -12,10 +12,13 @@ import { ControlledTextField } from "../../../PrimumComponents/FormBuilderV2/Con
 import "./ExpenseInsertUpdateStyle.css"
 
 interface ExpenseInsertUpdateComponentParam {
-    formInitialValue?: any
+    formInitialValue?: any,
+    onSuccess?: Function,
+    onFailed?: Function,
+    onCancel?: Function
 }
-
-export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: ExpenseInsertUpdateComponentParam) => {
+// DEFINE A METHOD TO FULLFILL OR EDIT 'PAID'
+export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFailed, onCancel, ...props }: ExpenseInsertUpdateComponentParam) => {
     const { createExpenses } = useExpensesContext();
     const { addAlertEvent } = useEventHandlerContext();
 
@@ -62,6 +65,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
                 message: "Despesa cadastrada com sucesso!",
                 type: "success"
             });
+            if (onSuccess) onSuccess();
         }).catch(() => {
             setIsFormLoading(false);
             addAlertEvent({
@@ -69,6 +73,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
                 message: "Não foi possivel cadastrar despesa!",
                 type: "error"
             });
+            if (onFailed) onFailed();
         });
     }
 
@@ -173,8 +178,13 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, ...props }: Exp
                                 </Grid>
                             </>}
                     </>}
-                <Grid className="form-action-button-container" item xs={12}>
-                    <Button className="form-action-button" variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Criar despesa </Button>
+                <Grid className="form-action-button-container" item xs={12} container columnSpacing={2} rowSpacing={1}>
+                    <Grid item xs={12} md={6}>
+                        <Button className="form-action-button" variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Criar despesa </Button>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Button className="form-action-button" variant="outlined" color="error" onClick={() => { if (onCancel) onCancel(); }} disabled={isFormLoading}> Cancelar </Button>
+                    </Grid>
                 </Grid>
             </Grid>
         </>

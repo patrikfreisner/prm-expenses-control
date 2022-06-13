@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Box from '@mui/material/Box';
 import SpeedDial from '@mui/material/SpeedDial';
@@ -8,20 +8,22 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import EventIcon from '@mui/icons-material/Event';
 import CloseIcon from '@mui/icons-material/Close';
-import { Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Typography } from '@mui/material';
+import { Backdrop, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import { ExpenseInsertUpdateComponent } from '../ExpenseInsertUpdateComponent/ExpenseInsertUpdateComponent';
 import { useEventHandlerContext } from '../../../../Context/EventHandlerContext';
+
+import './ExpenseSpeedDialStyle.css';
 
 const ExpenseSpeedDialComponent = () => {
     const { addAlertEvent } = useEventHandlerContext();
 
-    const [open, setOpen] = React.useState(false);
-    const [openDialog, setOpenDialog] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => { setOpen(false); };
     const handleCloseAction = () => setOpenDialog(true);
-    const handleCloseDialog = () => { setOpenDialog(false); setOpen(false) };
+    const handleCloseDialog = () => { setOpenDialog(false); setOpen(false); };
 
     const actions = [
         {
@@ -84,7 +86,7 @@ const ExpenseSpeedDialComponent = () => {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <ExpenseInsertUpdateComponent />
+                    <ExpenseInsertUpdateComponent onSuccess={handleCloseDialog} onFailed={handleCloseDialog} onCancel={handleCloseDialog} />
                 </DialogContent>
             </Dialog>
         </>

@@ -17,7 +17,7 @@ export const EventHandlerComponent = () => {
                     <Snackbar
                         key={dialog.event_id}
                         open={!!dialogAlerts}
-                        autoHideDuration={10000}
+                        autoHideDuration={8000}
                         onClose={(_, reason) => {
                             if (reason !== "clickaway") removeEventItem(dialog);
                         }}
