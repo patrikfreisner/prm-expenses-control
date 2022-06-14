@@ -7,7 +7,7 @@ import { useLoginContext } from './LoginContext';
 const TABLE = "PRMDB001";
 
 interface ExpensesInterface {
-    expensesValues: Array<Expense>,
+    expensesValues: Expense[],
     setExpensesValues: Function,
 }
 
@@ -47,7 +47,7 @@ export const useExpensesContext = () => {
             }
         });
         response.then((response) => {
-            setExpensesValues(response.data.Items);
+            setExpensesValues(new Array<Expense>(response.data.Items));
         });
         return response;
     }
@@ -65,6 +65,9 @@ export const useExpensesContext = () => {
                 }
             },
             ReturnValues: 'ALL_OLD'
+        });
+        response.then((data) => {
+            if (data.config.data) setExpensesValues([...expensesValues, new Expense(JSON.parse(data.config.data).Item)]);
         });
 
         return response;

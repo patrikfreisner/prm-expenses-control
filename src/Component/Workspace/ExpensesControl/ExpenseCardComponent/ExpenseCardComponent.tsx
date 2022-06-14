@@ -66,9 +66,7 @@ const ExpenseCardComponent = () => {
                 </Box>
             </Paper>
             <Box ref={container} />
-            {showMore ?
-                <PortalShowMoreDetailsComponent showMore={showMore} container={container} />
-                : null}
+            {showMore && <PortalShowMoreDetailsComponent showMore={showMore} container={container} />}
         </>
 
     )
