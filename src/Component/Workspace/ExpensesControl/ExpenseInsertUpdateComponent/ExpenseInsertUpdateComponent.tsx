@@ -1,4 +1,4 @@
-import { Button, FormControlLabel, Grid, TextField, Tooltip, Typography } from "@mui/material"
+import { Button, FormControlLabel, Grid } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { useForm, Validate } from "react-hook-form"
 import { Expense, ExpenseDateTime } from "../../../../Class/ExpenseClasses"
@@ -24,15 +24,15 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
 
     const _date: ExpenseDateTime = new ExpenseDateTime();
     let _maxDateRange: ExpenseDateTime = new ExpenseDateTime();
-    _maxDateRange.setFullYear(_maxDateRange.getFullYear() + 1);
+    _maxDateRange.setFullYear(_maxDateRange.getFullYear() + 4);
 
     let initialValues = formInitialValue || {
         description: "",
         value: "",
         isRecurring: false,
         isFixed: false,
-        recurring_start: _date,
-        recurring_end: _date
+        recurringStart: _date,
+        recurringEnd: _date
     };
 
 
@@ -44,7 +44,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
     const [isFormLoading, setIsFormLoading] = useState(false);
     const onSubmitHandler = (values: any) => {
         setIsFormLoading(true);
-        let expValues = new Expense(values);
+        let expValues: Expense = new Expense(values);
 
         expValues.sk = expValues.recurringStart?.getFullYear() + "#" + (
             expValues.recurringStart ?
@@ -79,8 +79,8 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
 
     const watchForIsRecurring = formController.watch("isRecurring");
     const watchForIsFixed = formController.watch("isFixed");
-    const watchForRecurringStart = formController.watch("recurring_start");
-    const watchForRecurringEnd = formController.watch("recurring_end");
+    const watchForRecurringStart = formController.watch("recurringStart");
+    const watchForRecurringEnd = formController.watch("recurringEnd");
 
     const validateMinDate: Validate<any> = () => {
         if (watchForRecurringStart <= watchForRecurringEnd) return true;
@@ -128,9 +128,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                                 label={"Desp. Fixa?"}
                                 labelPlacement={"top"}
                                 control={
-                                    <Tooltip title="Despesas fixas são recorrencias sem data limite, como contas de luz, agua e outros afins!">
-                                        <ControlledSwitch controller={formController} name="isFixed" rules={{}} />
-                                    </Tooltip>
+                                    <ControlledSwitch controller={formController} name="isFixed" rules={{}} />
                                 }
                             />
                         </Grid>
@@ -139,7 +137,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                     <>
                         <Grid item xs={12} md={6} lg={6}>
                             <ControlledDatePicker
-                                name={"recurring_start"}
+                                name={"recurringStart"}
                                 controller={formController}
                                 className="formInput"
                                 label="Inicio da recorrencia: "
@@ -155,7 +153,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                             <>
                                 <Grid item xs={12} md={6} lg={6}>
                                     <ControlledDatePicker
-                                        name={"recurring_end"}
+                                        name="recurringEnd"
                                         controller={formController}
                                         className="formInput"
                                         label="Fim da recorrencia: "

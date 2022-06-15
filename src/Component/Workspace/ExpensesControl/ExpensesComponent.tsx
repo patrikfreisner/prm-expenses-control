@@ -31,8 +31,18 @@ const ExpensesComponent = () => {
         return (
           <div key={item.pk + "_" + item.sk}>
             <p> Description: {item.description}</p>
-            <p> Value: {item.getExpenseFullValue()}</p>
-            <p> Category: {item.category}</p>
+            <p> Value: {item.value}</p>
+            <p> Category: {item.getType()}</p>
+            {item.getType() === "RECURRING_EXPENSE" &&
+              <>
+                <p> Time: {item.recurringCurrentDate}</p>
+                <p> Remaining Value: {item.getExpenseRemainingFullValue()}</p>
+                <p> Remaining Full Value: {item.getExpenseRemainingFullValue()}</p>
+                <p> Remaining Installment: {item.getRemainingInstallment()}</p>
+                <p> Total Installment: {item.getTotalInstallment()}</p>
+                <p> Expense total value: {item.getExpenseFullValue()}</p>
+              </>
+            }
           </div>
         )
       })}

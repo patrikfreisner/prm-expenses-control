@@ -47,7 +47,12 @@ export const useExpensesContext = () => {
             }
         });
         response.then((response) => {
-            setExpensesValues(new Array<Expense>(response.data.Items));
+            let expenseList: Array<Expense> = new Array<Expense>();
+            response.data.Items.forEach((element: any) => {
+                expenseList.push(new Expense(element));
+            });
+
+            setExpensesValues(expenseList);
         });
         return response;
     }

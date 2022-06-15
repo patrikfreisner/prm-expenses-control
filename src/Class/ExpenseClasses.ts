@@ -56,6 +56,7 @@ export class Expense extends DynamoDBObject {
         this.isFixed = expense.isFixed || false;
         this.recurringStart = expense.isRecurring === true && !expense.recurringStart ? new ExpenseDateTime() : (new ExpenseDateTime(expense.recurringStart) || null);
         this.recurringEnd = expense.isRecurring === true && !expense.recurringEnd ? new ExpenseDateTime("2999-01-01 00:00:01") : (new ExpenseDateTime(expense.recurringEnd) || null);
+        this.recurringCurrentDate = expense.isRecurring === true && expense.isFixed == false ? new ExpenseDateTime() : this.recurringStart;
         this.isPaid = expense.isPaid || false;
         this.category = expense.category || "";
     }
@@ -67,38 +68,39 @@ export class Expense extends DynamoDBObject {
     isFixed: boolean;
     recurringStart: ExpenseDateTime | null;
     recurringEnd: ExpenseDateTime | null;
+    recurringCurrentDate: ExpenseDateTime;
     category: string;
 
 
     // Recurring Expenses functions
     getTotalInstallment(): number {
         if (this.isRecurring && this.recurringStart && this.recurringEnd) {
-            var months;
+            let months: number = 0;
             months = (this.recurringEnd.getFullYear() - this.recurringStart.getFullYear()) * 12;
             months -= this.recurringStart.getMonth();
             months += this.recurringEnd.getMonth();
-            return months <= 0 ? 0 : months;
+            return (months + 1);
         } else {
             return 0;
         }
     }
 
     getRemainingInstallment(): number {
-        if (this.isRecurring && this.recurringStart && this.recurringEnd) {
-            var _currentDate = new ExpenseDateTime();
-            _currentDate.setMonth(_currentDate.getMonth() + 1);
+        if (this.isRecurring && this.isFixed == false && this.recurringStart && this.recurringEnd) {
+            // var _currentDate = new ExpenseDateTime();
+            // _currentDate.setMonth(_currentDate.getMonth() + 1);
             var months;
-            months = (this.recurringEnd.getFullYear() - _currentDate.getFullYear()) * 12;
-            months -= _currentDate.getMonth();
+            months = (this.recurringEnd.getFullYear() - this.recurringCurrentDate.getFullYear()) * 12;
+            months -= this.recurringCurrentDate.getMonth();
             months += this.recurringEnd.getMonth();
-            return months <= 0 ? 0 : months;
+            return (months + 1);
         } else {
             return 0;
         }
     }
 
     getExpenseFullValue(): number {
-        if (this.isRecurring) {
+        if (this.isRecurring && this.isFixed === false) {
             return this.value * this.getTotalInstallment();
         } else {
             return this.value;
@@ -106,7 +108,7 @@ export class Expense extends DynamoDBObject {
     }
 
     getExpenseRemainingFullValue(): number {
-        if (this.isRecurring) {
+        if (this.isRecurring && this.isFixed === false) {
             return this.value * this.getRemainingInstallment();
         } else {
             return this.value;
