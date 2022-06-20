@@ -30,18 +30,21 @@ const ExpensesComponent = () => {
       {expensesValues && expensesValues.map((item: Expense) => {
         return (
           <div key={item.pk + "_" + item.sk}>
+            <hr></hr>
             <p> Description: {item.description}</p>
             <p> Value: {item.value}</p>
             <p> Category: {item.getType()}</p>
             {item.getType() === "RECURRING_EXPENSE" &&
-              <>
-                <p> Time: {item.recurringCurrentDate}</p>
+              <div style={{ paddingLeft: 20 }}>
+                <p> Start time: {item.recurringStart?.toLocaleDateString()}</p>
+                <p> Current time: {item.recurringCurrentDate.toLocaleDateString()}</p>
+                <p> End time: {item.recurringEnd?.toLocaleDateString()}</p>
+                <p> Remaining Installment: {item.getRemainingInstallment()}</p>
                 <p> Remaining Value: {item.getExpenseRemainingFullValue()}</p>
                 <p> Remaining Full Value: {item.getExpenseRemainingFullValue()}</p>
-                <p> Remaining Installment: {item.getRemainingInstallment()}</p>
                 <p> Total Installment: {item.getTotalInstallment()}</p>
                 <p> Expense total value: {item.getExpenseFullValue()}</p>
-              </>
+              </div>
             }
           </div>
         )

@@ -93,7 +93,7 @@ export class Expense extends DynamoDBObject {
             months = (this.recurringEnd.getFullYear() - this.recurringCurrentDate.getFullYear()) * 12;
             months -= this.recurringCurrentDate.getMonth();
             months += this.recurringEnd.getMonth();
-            return (months + 1);
+            return months;
         } else {
             return 0;
         }
