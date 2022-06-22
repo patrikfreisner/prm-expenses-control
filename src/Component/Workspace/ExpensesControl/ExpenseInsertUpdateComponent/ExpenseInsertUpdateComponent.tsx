@@ -1,4 +1,4 @@
-import { Button, FormControlLabel, Grid } from "@mui/material"
+import { Button, Dialog, DialogContent, DialogTitle, FormControlLabel, Grid, IconButton, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { useForm, Validate } from "react-hook-form"
 import { Expense, ExpenseDateTime } from "../../../../Class/ExpenseClasses"
@@ -8,8 +8,10 @@ import { ControlledDatePicker } from "../../../PrimumComponents/FormBuilderV2/Co
 import { ControlledNumericField } from "../../../PrimumComponents/FormBuilderV2/ControlledNumericField"
 import { ControlledSwitch } from "../../../PrimumComponents/FormBuilderV2/ControlledSwitch"
 import { ControlledTextField } from "../../../PrimumComponents/FormBuilderV2/ControlledTextField"
+import CloseIcon from '@mui/icons-material/Close';
 
 import "./ExpenseInsertUpdateStyle.css"
+import NumberFormat from "react-number-format"
 
 interface ExpenseInsertUpdateComponentParam {
     formInitialValue?: any,
@@ -21,6 +23,12 @@ interface ExpenseInsertUpdateComponentParam {
 export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFailed, onCancel, ...props }: ExpenseInsertUpdateComponentParam) => {
     const { createExpenses } = useExpensesContext();
     const { addAlertEvent } = useEventHandlerContext();
+
+    const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+
+    const handleOpen = () => setShowConfirmationDialog(true);
+    const handleClose = () => setShowConfirmationDialog(false);
+    const [currentExpense, setCurrentExpense] = useState(new Object() as Expense);
 
     const _date: ExpenseDateTime = new ExpenseDateTime();
     let _maxDateRange: ExpenseDateTime = new ExpenseDateTime();
@@ -58,23 +66,26 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
             expValues.recurringEnd = null;
         }
 
-        createExpenses(expValues).then((response) => {
-            setIsFormLoading(false);
-            addAlertEvent({
-                name: "EXPENSE-CREATION-SUCCESS",
-                message: "Despesa cadastrada com sucesso!",
-                type: "success"
-            });
-            if (onSuccess) onSuccess();
-        }).catch(() => {
-            setIsFormLoading(false);
-            addAlertEvent({
-                name: "EXPENSE-CREATION-FAILED",
-                message: "Não foi possivel cadastrar despesa!",
-                type: "error"
-            });
-            if (onFailed) onFailed();
-        });
+        handleOpen();
+        setCurrentExpense(expValues);
+        setIsFormLoading(false);
+        // createExpenses(expValues).then((response) => {
+        //     setIsFormLoading(false);
+        //     addAlertEvent({
+        //         name: "EXPENSE-CREATION-SUCCESS",
+        //         message: "Despesa cadastrada com sucesso!",
+        //         type: "success"
+        //     });
+        //     if (onSuccess) onSuccess();
+        // }).catch(() => {
+        //     setIsFormLoading(false);
+        //     addAlertEvent({
+        //         name: "EXPENSE-CREATION-FAILED",
+        //         message: "Não foi possivel cadastrar despesa!",
+        //         type: "error"
+        //     });
+        //     if (onFailed) onFailed();
+        // });
     }
 
     const watchForIsRecurring = formController.watch("isRecurring");
@@ -133,7 +144,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                             />
                         </Grid>
                     </>}
-                {watchForIsRecurring &&
+                {watchForIsRecurring && !watchForIsFixed &&
                     <>
                         <Grid item xs={12} md={6} lg={6}>
                             <ControlledDatePicker
@@ -149,32 +160,32 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                                 disabled={true}
                             />
                         </Grid>
-                        {!watchForIsFixed &&
-                            <>
-                                <Grid item xs={12} md={6} lg={6}>
-                                    <ControlledDatePicker
-                                        name="recurringEnd"
-                                        controller={formController}
-                                        className="formInput"
-                                        label="Fim da recorrencia: "
-                                        datePickerOptions={{
-                                            minDate: watchForRecurringStart,
-                                            maxDate: _maxDateRange,
-                                            views: ["month", "year"]
-                                        }}
-                                        rules={{
-                                            required: true,
-                                            validate: validateMinDate
-                                        }}
-                                        messages={{
-                                            validate: watchForRecurringStart ? "Data não pode ser menor que " + (
-                                                (watchForRecurringStart.getMonth() + 1).toString().length == 1 ?
-                                                    "0" + (watchForRecurringStart.getMonth() + 1) :
-                                                    (watchForRecurringStart.getMonth() + 1)) + "/" + watchForRecurringStart.getFullYear() : ""
-                                        }}
-                                    />
-                                </Grid>
-                            </>}
+                        {/* {!watchForIsFixed &&
+                            <> */}
+                        <Grid item xs={12} md={6} lg={6}>
+                            <ControlledDatePicker
+                                name="recurringEnd"
+                                controller={formController}
+                                className="formInput"
+                                label="Fim da recorrencia: "
+                                datePickerOptions={{
+                                    minDate: watchForRecurringStart,
+                                    maxDate: _maxDateRange,
+                                    views: ["month", "year"]
+                                }}
+                                rules={{
+                                    required: true,
+                                    validate: validateMinDate
+                                }}
+                                messages={{
+                                    validate: watchForRecurringStart ? "Data não pode ser menor que " + (
+                                        (watchForRecurringStart.getMonth() + 1).toString().length == 1 ?
+                                            "0" + (watchForRecurringStart.getMonth() + 1) :
+                                            (watchForRecurringStart.getMonth() + 1)) + "/" + watchForRecurringStart.getFullYear() : ""
+                                }}
+                            />
+                        </Grid>
+                        {/* </>} */}
                     </>}
                 <Grid className="form-action-button-container" item xs={12} container columnSpacing={2} rowSpacing={1}>
                     <Grid item xs={12} md={6}>
@@ -185,6 +196,43 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                     </Grid>
                 </Grid>
             </Grid>
+            <Dialog
+                open={showConfirmationDialog}
+                onClose={handleClose}
+            >
+                <DialogTitle align='left'>
+                    Confirmar cadastro de despesa recorrente
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleClose}
+                        sx={{
+                            position: 'absolute',
+                            right: 16,
+                            top: 16,
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <Typography> Descrição: {currentExpense.description}</Typography>
+                            <Typography> Valor:
+                                <NumberFormat
+                                    displayType="text"
+                                    value={currentExpense.value}
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    prefix="R$ "
+                                    isNumericString={true}
+                                    fixedDecimalScale={true}
+                                    decimalScale={2} />
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

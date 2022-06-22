@@ -21,7 +21,7 @@ const ExpenseSpeedDialComponent = () => {
     const [openDialog, setOpenDialog] = useState(false);
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => { setOpen(false); };
+    const handleClose = () => setOpen(false);
     const handleCloseAction = () => setOpenDialog(true);
     const handleCloseDialog = () => { setOpenDialog(false); setOpen(false); };
 
