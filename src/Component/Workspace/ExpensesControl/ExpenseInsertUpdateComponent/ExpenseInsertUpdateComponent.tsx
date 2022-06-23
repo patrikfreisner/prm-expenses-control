@@ -12,6 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import "./ExpenseInsertUpdateStyle.css"
 import NumberFormat from "react-number-format"
+import { format } from "date-fns"
 
 interface ExpenseInsertUpdateComponentParam {
     formInitialValue?: any,
@@ -27,8 +28,8 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
     const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
     const handleOpen = () => setShowConfirmationDialog(true);
-    const handleClose = () => setShowConfirmationDialog(false);
-    const [currentExpense, setCurrentExpense] = useState(new Object() as Expense);
+    const handleClose = () => { setShowConfirmationDialog(false); }
+    const [currentExpense, setCurrentExpense] = useState(new Expense({}));
 
     const _date: ExpenseDateTime = new ExpenseDateTime();
     let _maxDateRange: ExpenseDateTime = new ExpenseDateTime();
@@ -43,7 +44,6 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
         recurringEnd: _date
     };
 
-
     const formController = useForm({
         defaultValues: initialValues,
         mode: "all"
@@ -51,7 +51,6 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
 
     const [isFormLoading, setIsFormLoading] = useState(false);
     const onSubmitHandler = (values: any) => {
-        setIsFormLoading(true);
         let expValues: Expense = new Expense(values);
 
         expValues.sk = expValues.recurringStart?.getFullYear() + "#" + (
@@ -64,28 +63,34 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
         if (expValues.isRecurring == false) {
             expValues.recurringStart = null;
             expValues.recurringEnd = null;
+
+            confirmExpenseCreation(expValues);
         }
 
         handleOpen();
         setCurrentExpense(expValues);
-        setIsFormLoading(false);
-        // createExpenses(expValues).then((response) => {
-        //     setIsFormLoading(false);
-        //     addAlertEvent({
-        //         name: "EXPENSE-CREATION-SUCCESS",
-        //         message: "Despesa cadastrada com sucesso!",
-        //         type: "success"
-        //     });
-        //     if (onSuccess) onSuccess();
-        // }).catch(() => {
-        //     setIsFormLoading(false);
-        //     addAlertEvent({
-        //         name: "EXPENSE-CREATION-FAILED",
-        //         message: "Não foi possivel cadastrar despesa!",
-        //         type: "error"
-        //     });
-        //     if (onFailed) onFailed();
-        // });
+    }
+
+    const confirmExpenseCreation = (expense: Expense) => {
+        let expenseValue: Expense = expense || currentExpense;
+        setIsFormLoading(true);
+        createExpenses(expenseValue).then((response) => {
+            setIsFormLoading(false);
+            addAlertEvent({
+                name: "EXPENSE-CREATION-SUCCESS",
+                message: "Despesa cadastrada com sucesso!",
+                type: "success"
+            });
+            if (onSuccess) onSuccess();
+        }).catch(() => {
+            setIsFormLoading(false);
+            addAlertEvent({
+                name: "EXPENSE-CREATION-FAILED",
+                message: "Não foi possivel cadastrar despesa!",
+                type: "error"
+            });
+            if (onFailed) onFailed();
+        });
     }
 
     const watchForIsRecurring = formController.watch("isRecurring");
@@ -189,10 +194,10 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                     </>}
                 <Grid className="form-action-button-container" item xs={12} container columnSpacing={2} rowSpacing={1}>
                     <Grid item xs={12} md={6}>
-                        <Button className="form-action-button" variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Criar despesa </Button>
+                        <Button className="form-action-button" variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)}> Criar despesa </Button>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <Button className="form-action-button" variant="outlined" color="error" onClick={() => { if (onCancel) onCancel(); }} disabled={isFormLoading}> Cancelar </Button>
+                        <Button className="form-action-button" variant="outlined" color="error" onClick={() => { if (onCancel) onCancel(); }}> Cancelar </Button>
                     </Grid>
                 </Grid>
             </Grid>
@@ -200,15 +205,15 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                 open={showConfirmationDialog}
                 onClose={handleClose}
             >
-                <DialogTitle align='left'>
-                    Confirmar cadastro de despesa recorrente
+                <DialogTitle align='left' sx={{ paddingRight: 6 }}>
+                    <Typography variant="h5">Confirmar cadastro de despesa recorrente</Typography>
                     <IconButton
                         aria-label="close"
                         onClick={handleClose}
                         sx={{
                             position: 'absolute',
-                            right: 16,
-                            top: 16,
+                            right: 10,
+                            top: 13,
                         }}
                     >
                         <CloseIcon />
@@ -216,9 +221,11 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                 </DialogTitle>
                 <DialogContent>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={12}>
                             <Typography> Descrição: {currentExpense.description}</Typography>
-                            <Typography> Valor:
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography> Valor parc.:
                                 <NumberFormat
                                     displayType="text"
                                     value={currentExpense.value}
@@ -229,6 +236,36 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                                     fixedDecimalScale={true}
                                     decimalScale={2} />
                             </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography> Parcelas: {currentExpense.getTotalInstallment()}</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography> Primeira parcela: {format(currentExpense.recurringStart || new Date(), "MM/yyyy")}</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography> Ultima parcela: {format(currentExpense.recurringEnd || new Date(), "MM/yyyy")}</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <Typography> Total:
+                                <NumberFormat
+                                    displayType="text"
+                                    value={currentExpense.getExpenseFullValue()}
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    prefix="R$ "
+                                    isNumericString={true}
+                                    fixedDecimalScale={true}
+                                    decimalScale={2} />
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <Button className="form-action-button" variant="outlined" onClick={confirmExpenseCreation} disabled={isFormLoading}> Criar </Button>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Button className="form-action-button" variant="outlined" color="error" onClick={handleClose} disabled={isFormLoading}> Cancelar </Button>
                         </Grid>
                     </Grid>
                 </DialogContent>
