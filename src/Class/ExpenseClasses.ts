@@ -45,6 +45,12 @@ export class ExpenseDateTime extends Date {
         }
         super(<Date>date);
     }
+
+    public toString = (): string => {
+        let month: string = (this.getMonth() + 1).toString();
+        month = month.length == 1 ? "0" + month : month;
+        return `${month}/${this.getFullYear()}`;
+    }
 }
 
 export class Expense extends DynamoDBObject {

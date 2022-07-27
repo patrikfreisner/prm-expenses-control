@@ -1,5 +1,5 @@
 import { Box, Divider, Grid, Stack, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import NumberFormat from 'react-number-format';
 import { Expense } from '../../../../Class/ExpenseClasses';
 import { useExpensesContext } from '../../../../Context/ExpensesContext';
@@ -16,18 +16,20 @@ interface ExpenseLaneComponentParams {
 function ExpenseLaneComponent({ name, type }: ExpenseLaneComponentParams) {
     const { expensesValues } = useExpensesContext();
 
-    const [laneTotalValue, setLaneTotalValue] = useState(0);
-    const [expenseLaneList, setExpenseLaneList] = useState(Array<Expense>());
+    const [currentLaneExpenses, setCurrentLaneExpenses] = useState(Array<Expense>());
+    const [expenseTotalValue, setExpenseTotalValue] = useState(0);
 
     useEffect(() => {
-        setExpenseLaneList(expensesValues.filter((expense: Expense) => {
-            if (expense.getType() == type) {
-                let _sum = laneTotalValue + expense.value;
-                setLaneTotalValue(_sum);
-                return expense;
+        setCurrentLaneExpenses(expensesValues.filter((item: Expense) => {
+            if (item.getType() === type) {
+                return item;
             }
         }));
-    }, [expensesValues, expenseLaneList]);
+
+        setExpenseTotalValue(currentLaneExpenses.reduce((count: number, expense: Expense) => {
+            return +count + +expense.value;
+        }, 0));
+    }, [expensesValues]);
 
     return (
         <>
@@ -37,14 +39,14 @@ function ExpenseLaneComponent({ name, type }: ExpenseLaneComponentParams) {
                     <Stack direction={'row'} justifyContent={'space-around'}>
                         <Box >
                             <Typography variant='h5' textAlign={'center'}> Itens </Typography>
-                            <Typography variant='h6' textAlign={'center'}> 2 </Typography>
+                            <Typography variant='h6' textAlign={'center'}> {currentLaneExpenses.length} </Typography>
                         </Box>
                         <Box >
                             <Typography variant='h5' textAlign={'center'}> Total </Typography>
                             <Typography variant='h6' textAlign={'center'}>
                                 <NumberFormat
                                     displayType="text"
-                                    value={laneTotalValue}
+                                    value={expenseTotalValue}
                                     thousandSeparator="."
                                     decimalSeparator=","
                                     prefix="R$ "
@@ -57,10 +59,8 @@ function ExpenseLaneComponent({ name, type }: ExpenseLaneComponentParams) {
                 </Box>
                 <Divider orientation='horizontal' sx={{ margin: 2 }} />
                 <Stack spacing={0.5}>
-                    {expenseLaneList && expenseLaneList.map((item: Expense) => {
-                        if (item.getType() == type) {
-                            return <ExpenseCardComponent key={item.pk + item.sk} expense={item} />;
-                        }
+                    {currentLaneExpenses && currentLaneExpenses.map((item: Expense) => {
+                        return <ExpenseCardComponent key={item.pk + item.sk} expense={item} />;
                     })}
                 </Stack>
             </Grid>

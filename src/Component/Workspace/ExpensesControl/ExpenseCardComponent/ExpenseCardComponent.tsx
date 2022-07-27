@@ -15,14 +15,40 @@ import NumberFormat from 'react-number-format';
 // Interfaces configuration
 interface PortalShowMoreDetailsInterface {
     showMore: boolean,
-    container: React.MutableRefObject<null>
+    container: React.MutableRefObject<null>,
+    expense: Expense
 }
 
-const PortalShowMoreDetailsComponent = ({ showMore, container }: PortalShowMoreDetailsInterface) => {
+const PortalShowMoreDetailsComponent = ({ showMore, container, expense }: PortalShowMoreDetailsInterface) => {
     return (
         <Portal container={container.current}>
             <Grow in={showMore}>
-                <Box className="showMoreDetailsContainer"></Box>
+                <Box className="showMoreDetailsContainer">
+                    <Typography variant='h6'> Descrição: {expense.description}</Typography>
+                    <Typography variant='h6'>
+                        Valor:&nbsp;
+                        <NumberFormat
+                            displayType="text"
+                            value={expense.value}
+                            thousandSeparator="."
+                            decimalSeparator=","
+                            prefix="R$ "
+                            isNumericString={true}
+                            fixedDecimalScale={true}
+                            decimalScale={2} />
+                    </Typography>
+                    {expense.getType() === "RECURRING_EXPENSE" &&
+                        <Box>
+                            <Typography variant='body1'> Inicio das parcelas: {expense.recurringStart?.toString()}</Typography>
+                            <Typography variant='body1'> Fim das parcelas: {expense.recurringEnd?.toString()}</Typography>
+                            <Typography variant='body1'> Remaining Installment: {expense.getRemainingInstallment()}</Typography>
+                            <Typography variant='body1'> Remaining Value: {expense.getExpenseRemainingFullValue()}</Typography>
+                            <Typography variant='body1'> Remaining Full Value: {expense.getExpenseRemainingFullValue()}</Typography>
+                            <Typography variant='body1'> Total Installment: {expense.getTotalInstallment()}</Typography>
+                            <Typography variant='body1'> Expense total value: {expense.getExpenseFullValue()}</Typography>
+                        </Box>
+                    }
+                </Box>
             </Grow>
         </Portal>
     );
@@ -82,7 +108,7 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
                 </Box>
             </Paper>
             <Box ref={container} />
-            {showMore && <PortalShowMoreDetailsComponent showMore={showMore} container={container} />}
+            {showMore && <PortalShowMoreDetailsComponent showMore={showMore} container={container} expense={expense} />}
         </>
 
     )
