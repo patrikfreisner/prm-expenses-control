@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react'
+import { Expense } from '../../../../Class/ExpenseClasses';
 
 // Stylesheet
 import "./ExpenseCardStyle.css"
@@ -9,6 +10,7 @@ import PaidIcon from '@mui/icons-material/Paid';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import NumberFormat from 'react-number-format';
 
 // Interfaces configuration
 interface PortalShowMoreDetailsInterface {
@@ -26,7 +28,11 @@ const PortalShowMoreDetailsComponent = ({ showMore, container }: PortalShowMoreD
     );
 }
 
-const ExpenseCardComponent = () => {
+interface ExpenseCardComponentParams {
+    expense: Expense
+}
+
+const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
     const [isPaid, setIsPaid] = useState(false);
     const [showMore, setShowMore] = useState(false);
 
@@ -38,10 +44,20 @@ const ExpenseCardComponent = () => {
                 <Box className='cardContainer'>
                     <Stack className="expenseHeaderContainer">
                         <Box>
-                            <Typography variant='h6' style={{ userSelect: 'none' }} noWrap> NuBank contas de cartão de credito </Typography>
+                            <Typography variant='h6' style={{ userSelect: 'none' }} noWrap> {expense.description} </Typography>
                         </Box>
                         <Box>
-                            <Typography variant='body1' style={{ userSelect: 'none' }}> R$ 1.450,00 </Typography>
+                            <Typography variant='body1' style={{ userSelect: 'none' }}>
+                                <NumberFormat
+                                    displayType="text"
+                                    value={expense.value}
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    prefix="R$ "
+                                    isNumericString={true}
+                                    fixedDecimalScale={true}
+                                    decimalScale={2} />
+                            </Typography>
                         </Box>
                     </Stack>
                     <Box className="cardIconsContainer">

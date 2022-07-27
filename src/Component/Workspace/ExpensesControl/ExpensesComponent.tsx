@@ -9,7 +9,7 @@ import ExpenseSpeedDialComponent from "./ExpenseSpeedDialComponent/ExpenseSpeedD
 import "./ExpensesStyle.css"
 
 const ExpensesComponent = () => {
-  const { getUserExpenses, expensesValues } = useExpensesContext();
+  const { getUserExpenses } = useExpensesContext();
 
   useEffect(() => {
     getUserExpenses()
@@ -22,12 +22,12 @@ const ExpensesComponent = () => {
 
   return (
     <>
-      {/* <Grid className="expensesLaneContainer" container spacing={2}>
-        <ExpenseLaneComponent name={"Recorrente"} />
-        <ExpenseLaneComponent name={"Variavel"} />
-        <ExpenseLaneComponent name={"Fixa"} />
-      </Grid> */}
-      {expensesValues && expensesValues.map((item: Expense) => {
+      <Grid className="expensesLaneContainer" container spacing={2}>
+        <ExpenseLaneComponent name={"Recorrente"} type={"VARIABLE_EXPENSE"} />
+        {/* <ExpenseLaneComponent name={"Variavel"} />
+        <ExpenseLaneComponent name={"Fixa"} /> */}
+      </Grid>
+      {/* {expensesValues && expensesValues.map((item: Expense) => {
         return (
           <div key={item.pk + "_" + item.sk}>
             <hr></hr>
@@ -48,7 +48,7 @@ const ExpensesComponent = () => {
             }
           </div>
         )
-      })}
+      })} */}
       <ExpenseSpeedDialComponent />
       <EventHandlerComponent />
     </>

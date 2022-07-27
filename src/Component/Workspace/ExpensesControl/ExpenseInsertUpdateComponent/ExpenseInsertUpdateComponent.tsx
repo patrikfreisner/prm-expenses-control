@@ -25,6 +25,8 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
     const { createExpenses } = useExpensesContext();
     const { addAlertEvent } = useEventHandlerContext();
 
+
+    const [isFormLoading, setIsFormLoading] = useState(false);
     const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
     const handleOpen = () => setShowConfirmationDialog(true);
@@ -49,7 +51,6 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
         mode: "all"
     });
 
-    const [isFormLoading, setIsFormLoading] = useState(false);
     const onSubmitHandler = (values: any) => {
         let expValues: Expense = new Expense(values);
 
@@ -65,10 +66,10 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
             expValues.recurringEnd = null;
 
             confirmExpenseCreation(expValues);
+        } else {
+            setCurrentExpense(expValues);
+            handleOpen();
         }
-
-        handleOpen();
-        setCurrentExpense(expValues);
     }
 
     const confirmExpenseCreation = (expense: Expense) => {
@@ -194,10 +195,10 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                     </>}
                 <Grid className="form-action-button-container" item xs={12} container columnSpacing={2} rowSpacing={1}>
                     <Grid item xs={12} md={6}>
-                        <Button className="form-action-button" variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)}> Criar despesa </Button>
+                        <Button className="form-action-button" variant="outlined" onClick={formController.handleSubmit(onSubmitHandler)} disabled={isFormLoading}> Criar despesa </Button>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <Button className="form-action-button" variant="outlined" color="error" onClick={() => { if (onCancel) onCancel(); }}> Cancelar </Button>
+                        <Button className="form-action-button" variant="outlined" color="error" onClick={() => { if (onCancel) onCancel(); }} disabled={isFormLoading}> Cancelar </Button>
                     </Grid>
                 </Grid>
             </Grid>
@@ -262,10 +263,15 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                     </Grid>
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
-                            <Button className="form-action-button" variant="outlined" onClick={confirmExpenseCreation} disabled={isFormLoading}> Criar </Button>
+                            <Button className="form-action-button" variant="outlined" onClick={() => {
+                                confirmExpenseCreation(currentExpense);
+                            }} disabled={isFormLoading}> Criar </Button>
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <Button className="form-action-button" variant="outlined" color="error" onClick={handleClose} disabled={isFormLoading}> Cancelar </Button>
+                            <Button className="form-action-button" variant="outlined" color="error" onClick={() => {
+                                handleClose();
+                                setIsFormLoading(false);
+                            }} disabled={isFormLoading}> Cancelar </Button>
                         </Grid>
                     </Grid>
                 </DialogContent>
