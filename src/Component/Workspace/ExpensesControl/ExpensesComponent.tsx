@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material"
 import React, { useEffect, useMemo } from "react"
-import { Expense } from "../../../Class/ExpenseClasses"
+import { useEventHandlerContext } from "../../../Context/EventHandlerContext"
 import { useExpensesContext } from "../../../Context/ExpensesContext"
 import { EventHandlerComponent } from "../EventHandlerComponent/EventHandlerComponent"
 import ExpenseLaneComponent from "./ExpenseLaneComponent/ExpenseLaneComponent"
@@ -10,13 +10,19 @@ import "./ExpensesStyle.css"
 
 const ExpensesComponent = () => {
   const { getUserExpenses } = useExpensesContext();
+  const { addAlertEvent } = useEventHandlerContext();
 
   useEffect(() => {
     getUserExpenses()
       .then((response) => {
         console.log(response);
       }).catch((err) => {
-        console.error(err);
+        addAlertEvent({
+          event_id: "EXPENSES_RETRIEVE",
+          name: "EXPENSES_RETRIEVE",
+          message: "Um problema ocorreu ao carregar suas informações, você está conectado a internet?",
+          type: "error"
+        });
       });
   }, []);
 
@@ -24,31 +30,9 @@ const ExpensesComponent = () => {
     <>
       <Grid className="expensesLaneContainer" container spacing={2}>
         <ExpenseLaneComponent name={"Recorrente"} type={"RECURRING_EXPENSE"} />
-        <ExpenseLaneComponent name={"Variavel"} type={"VARIABLE_EXPENSE"} />
-        <ExpenseLaneComponent name={"Fixa"} type={"FIXED_EXPENSE"} />
+        {/* <ExpenseLaneComponent name={"Variavel"} type={"VARIABLE_EXPENSE"} /> */}
+        {/* <ExpenseLaneComponent name={"Fixa"} type={"FIXED_EXPENSE"} /> */}
       </Grid>
-      {/* {expensesValues && expensesValues.map((item: Expense) => {
-        return (
-          <div key={item.pk + "_" + item.sk}>
-            <hr></hr>
-            <p> Description: {item.description}</p>
-            <p> Value: {item.value}</p>
-            <p> Category: {item.getType()}</p>
-            {item.getType() === "RECURRING_EXPENSE" &&
-              <div style={{ paddingLeft: 20 }}>
-                <p> Start time: {item.recurringStart?.toLocaleDateString()}</p>
-                <p> Current time: {item.recurringCurrentDate.toLocaleDateString()}</p>
-                <p> End time: {item.recurringEnd?.toLocaleDateString()}</p>
-                <p> Remaining Installment: {item.getRemainingInstallment()}</p>
-                <p> Remaining Value: {item.getExpenseRemainingFullValue()}</p>
-                <p> Remaining Full Value: {item.getExpenseRemainingFullValue()}</p>
-                <p> Total Installment: {item.getTotalInstallment()}</p>
-                <p> Expense total value: {item.getExpenseFullValue()}</p>
-              </div>
-            }
-          </div>
-        )
-      })} */}
       <ExpenseSpeedDialComponent />
       <EventHandlerComponent />
     </>

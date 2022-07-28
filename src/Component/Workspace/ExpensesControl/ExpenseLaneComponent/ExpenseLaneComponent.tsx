@@ -27,6 +27,7 @@ function ExpenseLaneComponent({ name, type }: ExpenseLaneComponentParams) {
         }));
 
         setExpenseTotalValue(currentLaneExpenses.reduce((count: number, expense: Expense) => {
+            // We used "+" before values to make Typescript sum instead of concatenate
             return +count + +expense.value;
         }, 0));
     }, [expensesValues]);
