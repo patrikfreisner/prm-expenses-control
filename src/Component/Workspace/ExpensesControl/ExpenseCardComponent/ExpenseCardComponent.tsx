@@ -24,10 +24,10 @@ const PortalShowMoreDetailsComponent = ({ showMore, container, expense }: Portal
         <Portal container={container.current}>
             <Grow in={showMore}>
                 <Box className="showMoreDetailsContainer">
-                    <Typography variant='h6'> Descrição: {expense.description}</Typography>
-                    <Typography variant='h6'>
+                    <Typography variant='h6'> <b>{expense.description}</b> </Typography>
+                    <Typography variant='body1'>
                         Valor:&nbsp;
-                        <NumberFormat
+                        <b><NumberFormat
                             displayType="text"
                             value={expense.value}
                             thousandSeparator="."
@@ -35,17 +35,40 @@ const PortalShowMoreDetailsComponent = ({ showMore, container, expense }: Portal
                             prefix="R$ "
                             isNumericString={true}
                             fixedDecimalScale={true}
-                            decimalScale={2} />
+                            decimalScale={2} /></b>
                     </Typography>
                     {expense.getType() === "RECURRING_EXPENSE" &&
                         <Box>
-                            <Typography variant='body1'> Inicio das parcelas: {expense.recurringStart?.toString()}</Typography>
-                            <Typography variant='body1'> Fim das parcelas: {expense.recurringEnd?.toString()}</Typography>
-                            <Typography variant='body1'> Remaining Installment: {expense.getRemainingInstallment()}</Typography>
-                            <Typography variant='body1'> Remaining Value: {expense.getExpenseRemainingFullValue()}</Typography>
-                            <Typography variant='body1'> Remaining Full Value: {expense.getExpenseRemainingFullValue()}</Typography>
-                            <Typography variant='body1'> Total Installment: {expense.getTotalInstallment()}</Typography>
-                            <Typography variant='body1'> Expense total value: {expense.getExpenseFullValue()}</Typography>
+                            <hr style={{ width: "50%" }} />
+                            <Typography variant='body1'> <b>Resumo da sua despesa</b> </Typography>
+                            <Typography variant='body1'> Parcelas restantes: {expense.getRemainingInstallment()}</Typography>
+                            <Typography variant='body1'> Valor restante:
+                                <NumberFormat
+                                    displayType="text"
+                                    value={expense.getExpenseRemainingFullValue()}
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    prefix="R$ "
+                                    isNumericString={true}
+                                    fixedDecimalScale={true}
+                                    decimalScale={2} />
+                            </Typography>
+                            <hr style={{ width: "50%" }} />
+                            <Typography variant='body1'> <b>Detalhes adicionais</b> </Typography>
+                            <Typography variant='body1'> Valor parcelado em {expense.getTotalInstallment()} vezes.</Typography>
+                            <Typography variant='body1'> Valor total da despesa:&nbsp;
+                                <NumberFormat
+                                    displayType="text"
+                                    value={expense.getExpenseFullValue()}
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    prefix="R$ "
+                                    isNumericString={true}
+                                    fixedDecimalScale={true}
+                                    decimalScale={2} />
+                            </Typography>
+                            <Typography variant='body1'> Inicio em {expense.recurringStart?.toString()}</Typography>
+                            <Typography variant='body1'> Fim previsto para {expense.recurringEnd?.toString()}</Typography>
                         </Box>
                     }
                 </Box>
@@ -72,7 +95,7 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
                         <Box>
                             <Typography variant='h6' style={{ userSelect: 'none' }} noWrap> {expense.description} </Typography>
                         </Box>
-                        <Box>
+                        <Box style={{ display: "flex", justifyContent: "space-between" }}>
                             <Typography variant='body1' style={{ userSelect: 'none' }}>
                                 <NumberFormat
                                     displayType="text"
@@ -83,6 +106,10 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
                                     isNumericString={true}
                                     fixedDecimalScale={true}
                                     decimalScale={2} />
+                            </Typography>
+                            |
+                            <Typography variant='body1' style={{ userSelect: 'none' }}>
+                                {(expense.getTotalInstallment() - expense.getRemainingInstallment())} de {expense.getTotalInstallment()}
                             </Typography>
                         </Box>
                     </Stack>
