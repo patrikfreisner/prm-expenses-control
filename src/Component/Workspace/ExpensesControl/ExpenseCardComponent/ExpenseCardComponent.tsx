@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Expense } from '../../../../Class/ExpenseClasses';
 
 // Stylesheet
@@ -11,6 +11,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import NumberFormat from 'react-number-format';
+import { useExpensesContext } from '../../../../Context/ExpensesContext';
+import { useEventHandlerContext } from '../../../../Context/EventHandlerContext';
 
 // Interfaces configuration
 interface PortalShowMoreDetailsInterface {
@@ -41,6 +43,7 @@ const PortalShowMoreDetailsComponent = ({ showMore, container, expense }: Portal
                         <Box>
                             <hr style={{ width: "50%" }} />
                             <Typography variant='body1'> <b>Resumo da sua despesa</b> </Typography>
+                            <Typography variant='body1'> Parcela atual: {expense.getTotalInstallment() - expense.getRemainingInstallment()}</Typography>
                             <Typography variant='body1'> Parcelas restantes: {expense.getRemainingInstallment()}</Typography>
                             <Typography variant='body1'> Valor restante:
                                 <NumberFormat
@@ -67,8 +70,8 @@ const PortalShowMoreDetailsComponent = ({ showMore, container, expense }: Portal
                                     fixedDecimalScale={true}
                                     decimalScale={2} />
                             </Typography>
-                            <Typography variant='body1'> Inicio em {expense.recurringStart?.toString()}</Typography>
-                            <Typography variant='body1'> Fim previsto para {expense.recurringEnd?.toString()}</Typography>
+                            <Typography variant='body1'> Primeira parcela paga em {expense.recurringStart?.toString()}</Typography>
+                            <Typography variant='body1'> Ultima parcela prevista para {expense.recurringEnd?.toString()}</Typography>
                         </Box>
                     }
                 </Box>
@@ -85,7 +88,39 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
     const [isPaid, setIsPaid] = useState(false);
     const [showMore, setShowMore] = useState(false);
 
+    const { addAlertEvent } = useEventHandlerContext();
+    const { updateIsPaidExpenses } = useExpensesContext();
+
+    const updateIsPaidOnExpenses = () => {
+        updateIsPaidExpenses(expense, !isPaid).then(() => {
+            let messageText = "";
+
+            if (!isPaid) {
+                messageText = 'Item "' + expense.description + '" marcado como pago!';
+            } else {
+                messageText = 'Item "' + expense.description + '" marcado como NÃO pago!';
+            }
+
+            addAlertEvent({
+                name: expense.pk + expense.sk,
+                message: messageText,
+                type: 'success'
+            });
+            setIsPaid(!isPaid);
+        }).catch(() => {
+            addAlertEvent({
+                name: expense.pk + expense.sk,
+                message: 'Houve um problema ao alterar o item "' + expense.description + '"!',
+                type: 'error'
+            });
+        });
+    }
+
     const container = useRef(null);
+
+    useEffect(() => {
+        setIsPaid(expense.isPaid);
+    }, []);
 
     return (
         <>
@@ -107,15 +142,17 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
                                     fixedDecimalScale={true}
                                     decimalScale={2} />
                             </Typography>
-                            |
-                            <Typography variant='body1' style={{ userSelect: 'none' }}>
-                                {(expense.getTotalInstallment() - expense.getRemainingInstallment())} de {expense.getTotalInstallment()}
-                            </Typography>
+                            <Box></Box>
+                            {expense.getType() === "RECURRING_EXPENSE" &&
+                                <Typography variant='body2' style={{ userSelect: 'none' }}>
+                                    {(expense.getTotalInstallment() - expense.getRemainingInstallment())} de {expense.getTotalInstallment()}
+                                </Typography>
+                            }
                         </Box>
                     </Stack>
                     <Box className="cardIconsContainer">
                         <IconButton aria-label="Marcar como pago" sx={{ color: isPaid === true ? '#3ec400' : 'grey' }} size="large" onClick={() => {
-                            setIsPaid(!isPaid);
+                            updateIsPaidOnExpenses();
                         }}>
                             <PaidIcon className="cardIcons" />
                         </IconButton>

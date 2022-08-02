@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import React, { createContext, useState, useContext } from 'react'
 import { Expense } from '../Class/ExpenseClasses';
-import { queryItems, createItem } from '../Services/InvokeAWS/InvokeBaseDynamoDBAPI';
+import { queryItems, createItem, updateItem } from '../Services/InvokeAWS/InvokeBaseDynamoDBAPI';
 import { useLoginContext } from './LoginContext';
 
 const TABLE = "PRMDB001";
@@ -78,9 +78,30 @@ export const useExpensesContext = () => {
         return response;
     }
 
+    function updateIsPaidExpenses(expense: Expense, isPaid: boolean): Promise<AxiosResponse<any, any>> {
+        const response = updateItem(TABLE, {
+            Key: {
+                pk: expense.pk,
+                sk: expense.sk
+            },
+            ExpressionAttributeValues: {
+                ':isPaid': isPaid
+            },
+            UpdateExpression: 'SET isPaid = :isPaid',
+            ReturnValues: 'ALL_NEW'
+        });
+        // No need to update current!
+        // response.then((data) => {
+        //     if (data.data.Attributes) setExpensesValues([...expensesValues, new Expense(data.data.Attributes)]);
+        // });
+
+        return response;
+    }
+
     return {
         expensesValues,
         getUserExpenses,
         createExpenses,
+        updateIsPaidExpenses
     };
 }

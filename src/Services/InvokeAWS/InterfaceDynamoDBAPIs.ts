@@ -123,7 +123,7 @@ export interface updateItemParameters {
         }
         /* [key: string]: ... */
     },
-    ExpressionAttributeNames: {
+    ExpressionAttributeNames?: {
         [key: string]: any
     };
     ExpressionAttributeValues: {
