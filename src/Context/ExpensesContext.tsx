@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import React, { createContext, useState, useContext } from 'react'
 import { Expense } from '../Class/ExpenseClasses';
-import { queryItems, createItem, updateItem } from '../Services/InvokeAWS/InvokeBaseDynamoDBAPI';
+import { queryItems, createItem, updateItem, deleteItem } from '../Services/InvokeAWS/InvokeBaseDynamoDBAPI';
 import { useLoginContext } from './LoginContext';
 
 const TABLE = "PRMDB001";
@@ -98,10 +98,21 @@ export const useExpensesContext = () => {
         return response;
     }
 
+    function deleteExpense(_deleteExpense: Expense): Promise<AxiosResponse<any, any>> {
+        const response = deleteItem(TABLE, _deleteExpense.pk, _deleteExpense.sk);
+        response.then(() => {
+            setExpensesValues(expensesValues.filter((currentExpense: Expense) => {
+                return currentExpense !== _deleteExpense;
+            }))
+        });
+        return response;
+    }
+
     return {
         expensesValues,
         getUserExpenses,
         createExpenses,
-        updateIsPaidExpenses
+        updateIsPaidExpenses,
+        deleteExpense
     };
 }

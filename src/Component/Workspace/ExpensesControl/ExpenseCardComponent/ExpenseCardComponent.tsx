@@ -5,7 +5,7 @@ import { Expense } from '../../../../Class/ExpenseClasses';
 import "./ExpenseCardStyle.css"
 
 // MUI Components
-import { Box, Grow, IconButton, Paper, Portal, Stack, Typography } from "@mui/material"
+import { Box, Button, Grow, IconButton, Paper, Portal, Stack, Typography } from "@mui/material"
 import PaidIcon from '@mui/icons-material/Paid';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -18,10 +18,23 @@ import { useEventHandlerContext } from '../../../../Context/EventHandlerContext'
 interface PortalShowMoreDetailsInterface {
     showMore: boolean,
     container: React.MutableRefObject<null>,
-    expense: Expense
+    expense: Expense,
+    isPaid: boolean
 }
 
-const PortalShowMoreDetailsComponent = ({ showMore, container, expense }: PortalShowMoreDetailsInterface) => {
+const PortalShowMoreDetailsComponent = ({ showMore, container, expense, isPaid }: PortalShowMoreDetailsInterface) => {
+    const { addAlertEvent } = useEventHandlerContext();
+    const { deleteExpense } = useExpensesContext();
+
+    const deleteExpenseHandler = () => {
+        deleteExpense(expense)
+        // .then(() => {
+        //     // TODO: SUCCESS
+        // }).catch(() => {
+        //     // TODO: ERROR
+        // });
+    };
+
     return (
         <Portal container={container.current}>
             <Grow in={showMore}>
@@ -74,6 +87,19 @@ const PortalShowMoreDetailsComponent = ({ showMore, container, expense }: Portal
                             <Typography variant='body1'> Ultima parcela prevista para {expense.recurringEnd?.toString()}</Typography>
                         </Box>
                     }
+                    <Box style={{ marginTop: 10, paddingBottom: 10 }}>
+                        <Button variant='contained' color='error' onClick={() => {
+                            if (isPaid === true) {
+                                addAlertEvent({
+                                    name: expense.pk + expense.sk,
+                                    message: 'Você não pode deletar uma despesa já paga!',
+                                    type: 'info'
+                                });
+                            } else {
+                                deleteExpenseHandler();
+                            }
+                        }}> Apagar despesa </Button>
+                    </Box>
                 </Box>
             </Grow>
         </Portal>
@@ -85,6 +111,9 @@ interface ExpenseCardComponentParams {
 }
 
 const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
+
+    const [loading, setLoading] = useState(false);
+
     const [isPaid, setIsPaid] = useState(false);
     const [showMore, setShowMore] = useState(false);
 
@@ -92,6 +121,7 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
     const { updateIsPaidExpenses } = useExpensesContext();
 
     const updateIsPaidOnExpenses = () => {
+        setLoading(true);
         updateIsPaidExpenses(expense, !isPaid).then(() => {
             let messageText = "";
 
@@ -106,6 +136,7 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
                 message: messageText,
                 type: 'success'
             });
+            setLoading(false);
             setIsPaid(!isPaid);
         }).catch(() => {
             addAlertEvent({
@@ -113,6 +144,7 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
                 message: 'Houve um problema ao alterar o item "' + expense.description + '"!',
                 type: 'error'
             });
+            setLoading(false);
         });
     }
 
@@ -151,7 +183,7 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
                         </Box>
                     </Stack>
                     <Box className="cardIconsContainer">
-                        <IconButton aria-label="Marcar como pago" sx={{ color: isPaid === true ? '#3ec400' : 'grey' }} size="large" onClick={() => {
+                        <IconButton aria-label="Marcar como pago" disabled={loading} sx={{ color: isPaid === true ? '#3ec400' : 'grey' }} size="large" onClick={() => {
                             updateIsPaidOnExpenses();
                         }}>
                             <PaidIcon className="cardIcons" />
@@ -172,7 +204,7 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
                 </Box>
             </Paper>
             <Box ref={container} />
-            {showMore && <PortalShowMoreDetailsComponent showMore={showMore} container={container} expense={expense} />}
+            {showMore && <PortalShowMoreDetailsComponent showMore={showMore} container={container} expense={expense} isPaid={isPaid} />}
         </>
 
     )
