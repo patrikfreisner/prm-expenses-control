@@ -54,18 +54,24 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
     const onSubmitHandler = (values: any) => {
         let expValues: Expense = new Expense(values);
 
-        expValues.sk = expValues.recurringStart?.getFullYear() + "#" + (
-            expValues.recurringStart ?
-                expValues.recurringStart?.getMonth().toString().length > 1 ?
-                    expValues.recurringStart?.getMonth() + 1 :
-                    "0" + (expValues.recurringStart?.getMonth() + 1).toString()
-                : 0) + "#" + expValues.getType() + "#" + new Date().getTime();
+        if (!formInitialValue) {
+            expValues.sk = expValues.recurringStart?.getFullYear() + "#" + (
+                expValues.recurringStart ?
+                    expValues.recurringStart?.getMonth().toString().length > 1 ?
+                        expValues.recurringStart?.getMonth() + 1 :
+                        "0" + (expValues.recurringStart?.getMonth() + 1).toString()
+                    : 0) + "#" + expValues.getType() + "#" + new Date().getTime();
+        }
 
         if (expValues.isRecurring == false) {
             expValues.recurringStart = null;
             expValues.recurringEnd = null;
 
-            confirmExpenseCreation(expValues);
+            if (!formInitialValue) {
+                confirmExpenseCreation(expValues);
+            } else {
+                confirmExpenseUpdate(expValues);
+            }
         } else {
             setCurrentExpense(expValues);
             handleOpen();

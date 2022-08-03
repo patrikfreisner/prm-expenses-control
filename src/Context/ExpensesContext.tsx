@@ -79,7 +79,38 @@ export const useExpensesContext = () => {
     }
 
     function updateExpenses(values: Expense): Promise<AxiosResponse<any, any>> {
-        values.pk = "USER#" + userData.sub;
+        console.log(">>> ", values);
+        const response = createItem(TABLE, {
+            Item: values,
+            Expected: {
+                "pk": {
+                    Exists: true,
+                    Value: values.pk
+                },
+                "sk": {
+                    Exists: true,
+                    Value: values.sk
+                }
+            },
+            ReturnValues: 'NONE'
+        });
+        response.then(() => {
+            // setExpensesValues([...expensesValues, values]);
+            let _tempExp = expensesValues.filter((currentExpense: Expense) => {
+                if (currentExpense.pk.toString() === values.pk.toString() && currentExpense.sk.toString() === values.sk.toString()) {
+                    return values;
+                } else {
+                    return currentExpense;
+                }
+            });
+            setExpensesValues(_tempExp);
+        });
+
+        return response;
+    }
+
+    function _updateExpenses(values: Expense): Promise<AxiosResponse<any, any>> {
+        // values.pk = "USER#" + userData.sub;
         const response = updateItem(TABLE, {
             Key: {
                 pk: values.pk,
