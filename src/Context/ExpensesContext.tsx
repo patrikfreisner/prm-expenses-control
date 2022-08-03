@@ -78,6 +78,32 @@ export const useExpensesContext = () => {
         return response;
     }
 
+    function updateExpenses(values: Expense): Promise<AxiosResponse<any, any>> {
+        values.pk = "USER#" + userData.sub;
+        const response = updateItem(TABLE, {
+            Key: {
+                pk: values.pk,
+                sk: values.sk
+            },
+            ExpressionAttributeValues: {},
+            UpdateExpression: '',
+            Expected: {
+                "pk": {
+                    Exists: false
+                },
+                "sk": {
+                    Exists: false
+                }
+            },
+            ReturnValues: 'ALL_NEW'
+        });
+        response.then((data) => {
+            if (data.config.data) setExpensesValues([...expensesValues, new Expense(JSON.parse(data.config.data).Item)]);
+        });
+
+        return response;
+    }
+
     function updateIsPaidExpenses(expense: Expense, isPaid: boolean): Promise<AxiosResponse<any, any>> {
         const response = updateItem(TABLE, {
             Key: {
@@ -112,6 +138,7 @@ export const useExpensesContext = () => {
         expensesValues,
         getUserExpenses,
         createExpenses,
+        updateExpenses,
         updateIsPaidExpenses,
         deleteExpense
     };

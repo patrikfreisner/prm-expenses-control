@@ -5,14 +5,16 @@ import { Expense } from '../../../../Class/ExpenseClasses';
 import "./ExpenseCardStyle.css"
 
 // MUI Components
-import { Box, Button, Grow, IconButton, Paper, Portal, Stack, Typography } from "@mui/material"
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grow, IconButton, Paper, Portal, Stack, Typography } from "@mui/material"
 import PaidIcon from '@mui/icons-material/Paid';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import CloseIcon from '@mui/icons-material/Close';
 import NumberFormat from 'react-number-format';
 import { useExpensesContext } from '../../../../Context/ExpensesContext';
 import { useEventHandlerContext } from '../../../../Context/EventHandlerContext';
+import { ExpenseInsertUpdateComponent } from '../ExpenseInsertUpdateComponent/ExpenseInsertUpdateComponent';
 
 // Interfaces configuration
 interface PortalShowMoreDetailsInterface {
@@ -27,12 +29,23 @@ const PortalShowMoreDetailsComponent = ({ showMore, container, expense, isPaid }
     const { deleteExpense } = useExpensesContext();
 
     const deleteExpenseHandler = () => {
-        deleteExpense(expense)
-        // .then(() => {
-        //     // TODO: SUCCESS
-        // }).catch(() => {
-        //     // TODO: ERROR
-        // });
+        deleteExpense(expense).then(() => {
+            // TODO: SUCCESS
+            addAlertEvent({
+                event_id: expense.pk + expense.sk,
+                name: expense.pk + expense.sk,
+                message: "A despesa foi excluida com sucesso!",
+                type: "success"
+            });
+        }).catch(() => {
+            // TODO: ERROR
+            addAlertEvent({
+                event_id: expense.pk + expense.sk,
+                name: expense.pk + expense.sk,
+                message: "Houve um problema ao deletar o item " + expense.description + "!",
+                type: "error"
+            });
+        });
     };
 
     return (
@@ -93,7 +106,7 @@ const PortalShowMoreDetailsComponent = ({ showMore, container, expense, isPaid }
                                 addAlertEvent({
                                     name: expense.pk + expense.sk,
                                     message: 'Você não pode deletar uma despesa já paga!',
-                                    type: 'info'
+                                    type: 'warning'
                                 });
                             } else {
                                 deleteExpenseHandler();
@@ -112,13 +125,14 @@ interface ExpenseCardComponentParams {
 
 const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
 
-    const [loading, setLoading] = useState(false);
-
-    const [isPaid, setIsPaid] = useState(false);
-    const [showMore, setShowMore] = useState(false);
-
     const { addAlertEvent } = useEventHandlerContext();
     const { updateIsPaidExpenses } = useExpensesContext();
+
+    const container = useRef(null);
+    const [loading, setLoading] = useState(false);
+    const [isPaid, setIsPaid] = useState(false);
+    const [showMore, setShowMore] = useState(false);
+    const [showEditDialog, setShowEditDialog] = useState(false);
 
     const updateIsPaidOnExpenses = () => {
         setLoading(true);
@@ -148,7 +162,8 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
         });
     }
 
-    const container = useRef(null);
+    const openEditDialog = () => { setShowEditDialog(true); };
+    const handleCloseEditDialog = () => { setShowEditDialog(false); };
 
     useEffect(() => {
         setIsPaid(expense.isPaid);
@@ -188,7 +203,7 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
                         }}>
                             <PaidIcon className="cardIcons" />
                         </IconButton>
-                        <IconButton aria-label="Editar despesa" size="large" disabled={isPaid}>
+                        <IconButton aria-label="Editar despesa" size="large" onClick={openEditDialog} disabled={isPaid}>
                             <EditIcon className="cardIcons" />
                         </IconButton>
                         <IconButton aria-label="Mostrar mais detalhes" size="large" onClick={() => {
@@ -205,6 +220,29 @@ const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
             </Paper>
             <Box ref={container} />
             {showMore && <PortalShowMoreDetailsComponent showMore={showMore} container={container} expense={expense} isPaid={isPaid} />}
+            <Dialog
+                open={showEditDialog}
+                onClose={handleCloseEditDialog}
+            // keepMounted  // dialog still exists when focussed out; I've take it off because form doesn't unregister itself;
+            >
+                <DialogTitle align='left'>
+                    Nova despesa
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleCloseEditDialog}
+                        sx={{
+                            position: 'absolute',
+                            right: 16,
+                            top: 16,
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <ExpenseInsertUpdateComponent formInitialValue={expense} onSuccess={handleCloseEditDialog} onFailed={handleCloseEditDialog} onCancel={handleCloseEditDialog} />
+                </DialogContent>
+            </Dialog>
         </>
 
     )

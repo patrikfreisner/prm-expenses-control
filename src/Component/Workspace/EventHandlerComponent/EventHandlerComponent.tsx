@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, Box, Fade, Grid, IconButton, Slide, Snackbar } from "@mui/material"
+import { Alert, Box, Fade, Grid, Grow, IconButton, Slide, Snackbar } from "@mui/material"
 
 import CloseIcon from '@mui/icons-material/Close';
 import { EventsEntry, useEventHandlerContext } from '../../../Context/EventHandlerContext';
@@ -21,7 +21,9 @@ export const EventHandlerComponent = () => {
                         onClose={(_, reason) => {
                             if (reason !== "clickaway") removeEventItem(dialog);
                         }}
-                        TransitionComponent={(props) => (<Slide {...props} direction="up" />)}
+                        TransitionComponent={(props) => (<Grow {...props} in={!!dialogAlerts}
+                            {...(dialogAlerts ? { timeout: 700 } : {})} />)}
+                        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                     >
                         <Alert severity={dialog.type}
                             variant="filled"

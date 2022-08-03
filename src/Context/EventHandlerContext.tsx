@@ -10,7 +10,7 @@ export class EventsEntry {
     event_id?: string;
     name: string;
     message: string;
-    type: "success" | "error" | "info";
+    type: "success" | "error" | "info" | "warning";
 }
 
 interface EventHandlerInterface {
@@ -44,7 +44,8 @@ export const useEventHandlerContext = () => {
 
     function addAlertEvent(eventParam: EventsEntry): void {
         eventParam.event_id = "EVENT#" + eventParam.name + "#" + new Date().getTime();
-        setDialogAlerts([...dialogAlerts, eventParam]);
+        setDialogAlerts([eventParam]);
+        // setDialogAlerts([...dialogAlerts, eventParam]);
     }
 
     function removeAlertEvent(eventParam: EventsEntry): void {
