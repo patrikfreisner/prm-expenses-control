@@ -29,9 +29,9 @@ const ExpensesComponent = () => {
   return (
     <>
       <Grid className="expensesLaneContainer" container spacing={2}>
-        <ExpenseLaneComponent name={"Recorrente"} type={"RECURRING_EXPENSE"} />
+        {/* <ExpenseLaneComponent name={"Recorrente"} type={"RECURRING_EXPENSE"} /> */}
         <ExpenseLaneComponent name={"Variavel"} type={"VARIABLE_EXPENSE"} />
-        <ExpenseLaneComponent name={"Fixa"} type={"FIXED_EXPENSE"} />
+        {/* <ExpenseLaneComponent name={"Fixa"} type={"FIXED_EXPENSE"} /> */}
       </Grid>
       <ExpenseSpeedDialComponent />
       <EventHandlerComponent />

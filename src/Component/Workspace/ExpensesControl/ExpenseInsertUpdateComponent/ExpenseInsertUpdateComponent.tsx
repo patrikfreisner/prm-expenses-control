@@ -68,8 +68,10 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
             expValues.recurringEnd = null;
 
             if (!formInitialValue) {
+                console.log(">>> Running create on InsertUpdateCompo");
                 confirmExpenseCreation(expValues);
             } else {
+                console.log(">>> Running update on InsertUpdateCompo");
                 confirmExpenseUpdate(expValues);
             }
         } else {
@@ -103,7 +105,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
     const confirmExpenseUpdate = (expense: Expense) => {
         let expenseValue: Expense = expense || currentExpense;
         setIsFormLoading(true);
-        updateExpenses(expenseValue).then((response) => {
+        updateExpenses(expenseValue).then(() => {
             setIsFormLoading(false);
             addAlertEvent({
                 name: "EXPENSE-UPDATE-SUCCESS",

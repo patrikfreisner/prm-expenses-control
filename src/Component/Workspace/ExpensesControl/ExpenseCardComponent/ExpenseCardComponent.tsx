@@ -126,7 +126,7 @@ interface ExpenseCardComponentParams {
 const ExpenseCardComponent = ({ expense }: ExpenseCardComponentParams) => {
 
     const { addAlertEvent } = useEventHandlerContext();
-    const { updateIsPaidExpenses } = useExpensesContext();
+    const { updateIsPaidExpenses, expensesValues } = useExpensesContext();
 
     const container = useRef(null);
     const [loading, setLoading] = useState(false);

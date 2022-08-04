@@ -79,7 +79,6 @@ export const useExpensesContext = () => {
     }
 
     function updateExpenses(values: Expense): Promise<AxiosResponse<any, any>> {
-        console.log(">>> ", values);
         const response = createItem(TABLE, {
             Item: values,
             Expected: {
@@ -96,40 +95,16 @@ export const useExpensesContext = () => {
         });
         response.then(() => {
             // setExpensesValues([...expensesValues, values]);
-            let _tempExp = expensesValues.filter((currentExpense: Expense) => {
-                if (currentExpense.pk.toString() === values.pk.toString() && currentExpense.sk.toString() === values.sk.toString()) {
-                    return values;
+            let _tempExp: Expense[] = [];
+            expensesValues.forEach((currentExpense: Expense) => {
+                if (currentExpense.sk !== values.sk) {
+                    _tempExp.push(currentExpense);
                 } else {
-                    return currentExpense;
+                    _tempExp.push(values);
                 }
-            });
-            setExpensesValues(_tempExp);
-        });
-
-        return response;
-    }
-
-    function _updateExpenses(values: Expense): Promise<AxiosResponse<any, any>> {
-        // values.pk = "USER#" + userData.sub;
-        const response = updateItem(TABLE, {
-            Key: {
-                pk: values.pk,
-                sk: values.sk
-            },
-            ExpressionAttributeValues: {},
-            UpdateExpression: '',
-            Expected: {
-                "pk": {
-                    Exists: false
-                },
-                "sk": {
-                    Exists: false
-                }
-            },
-            ReturnValues: 'ALL_NEW'
-        });
-        response.then((data) => {
-            if (data.config.data) setExpensesValues([...expensesValues, new Expense(JSON.parse(data.config.data).Item)]);
+            })
+            setExpensesValues([..._tempExp, values]);
+            console.log(expensesValues);
         });
 
         return response;
