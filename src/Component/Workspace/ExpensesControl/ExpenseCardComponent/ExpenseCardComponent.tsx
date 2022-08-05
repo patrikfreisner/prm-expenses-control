@@ -5,7 +5,7 @@ import { Expense } from '../../../../Class/ExpenseClasses';
 import "./ExpenseCardStyle.css"
 
 // MUI Components
-import { Box, Button, Dialog, DialogContent, DialogTitle, Grow, IconButton, Paper, Portal, Stack, Typography } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grow, IconButton, Paper, Portal, Stack, Typography } from "@mui/material"
 import PaidIcon from '@mui/icons-material/Paid';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -27,6 +27,14 @@ interface PortalShowMoreDetailsInterface {
 const PortalShowMoreDetailsComponent = ({ showMore, container, expense, isPaid }: PortalShowMoreDetailsInterface) => {
     const { addAlertEvent } = useEventHandlerContext();
     const { deleteExpense } = useExpensesContext();
+
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const handleOpenDeleteDialog = () => {
+        setShowDeleteDialog(true);
+    }
+    const handleCloseDeleteDialog = () => {
+        setShowDeleteDialog(false);
+    }
 
     const deleteExpenseHandler = () => {
         deleteExpense(expense).then(() => {
@@ -109,12 +117,45 @@ const PortalShowMoreDetailsComponent = ({ showMore, container, expense, isPaid }
                                     type: 'warning'
                                 });
                             } else {
-                                deleteExpenseHandler();
+                                handleOpenDeleteDialog();
                             }
                         }}> Apagar despesa </Button>
                     </Box>
                 </Box>
             </Grow>
+            <Dialog
+                open={showDeleteDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Deletar despesa "{expense.description}"?
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Você tem certeza que deseja apagar a despesa "{expense.description}" de valor&nbsp;
+                        <NumberFormat
+                            displayType="text"
+                            value={expense.value}
+                            thousandSeparator="."
+                            decimalSeparator=","
+                            prefix="R$ "
+                            isNumericString={true}
+                            fixedDecimalScale={true}
+                            decimalScale={2} />
+                        ?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant='contained' color='error' onClick={() => {
+                        deleteExpenseHandler();
+                        handleCloseDeleteDialog();
+                    }}>Quero apagar!</Button>
+                    <Button variant='contained' color='primary' onClick={handleCloseDeleteDialog} autoFocus>
+                        Manter
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Portal>
     );
 }
