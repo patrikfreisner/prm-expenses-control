@@ -50,7 +50,7 @@ const ExpenseSpeedDialComponent = () => {
                 <Backdrop open={open} />
                 <SpeedDial
                     ariaLabel="Componente para cadastrar novas despesas"
-                    sx={{ position: 'fixed', bottom: 16, right: 16 }}
+                    sx={{ position: 'fixed', bottom: 45, right: 16 }}
                     icon={<SpeedDialIcon />}
                     onClose={handleClose}
                     onOpen={handleOpen}

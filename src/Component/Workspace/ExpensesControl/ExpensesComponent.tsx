@@ -1,8 +1,7 @@
-import { Grid } from "@mui/material"
-import React, { useEffect, useMemo } from "react"
+import { Box, Grid, Tab, Tabs } from "@mui/material"
+import React, { useEffect, useState } from "react"
 import { useEventHandlerContext } from "../../../Context/EventHandlerContext"
 import { useExpensesContext } from "../../../Context/ExpensesContext"
-import { EventHandlerComponent } from "../EventHandlerComponent/EventHandlerComponent"
 import ExpenseLaneComponent from "./ExpenseLaneComponent/ExpenseLaneComponent"
 import ExpenseSpeedDialComponent from "./ExpenseSpeedDialComponent/ExpenseSpeedDialComponent"
 
@@ -11,6 +10,8 @@ import "./ExpensesStyle.css"
 const ExpensesComponent = () => {
   const { getUserExpenses } = useExpensesContext();
   const { addAlertEvent } = useEventHandlerContext();
+
+  const [currentTab, setCurrentTab] = useState(0);
 
   useEffect(() => {
     getUserExpenses().catch(() => {
@@ -31,7 +32,23 @@ const ExpensesComponent = () => {
         <ExpenseLaneComponent name={"Fixa"} type={"FIXED_EXPENSE"} />
       </Grid>
       <ExpenseSpeedDialComponent />
-      <EventHandlerComponent />
+      <Box style={{ position: "fixed", bottom: 0, left: 0, backgroundColor: "#e2e2e2", maxWidth: "100vw" }}>
+        <Tabs
+          value={currentTab}
+          onChange={(data) => { console.log(data) }}
+          variant="scrollable"
+          scrollButtons={true}
+          aria-label="scrollable prevent tabs example"
+        >
+          <Tab label="Item One" />
+          <Tab label="Item Two" />
+          <Tab label="Item Three" />
+          <Tab label="Item Four" />
+          <Tab label="Item Five" />
+          <Tab label="Item Six" />
+          <Tab label="Item Seven" />
+        </Tabs>
+      </Box>
     </>
   )
 }
