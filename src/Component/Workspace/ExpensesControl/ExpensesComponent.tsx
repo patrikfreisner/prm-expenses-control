@@ -13,6 +13,10 @@ const ExpensesComponent = () => {
 
   const [currentTab, setCurrentTab] = useState(0);
 
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setCurrentTab(newValue);
+  };
+
   useEffect(() => {
     getUserExpenses().catch(() => {
       addAlertEvent({
@@ -35,9 +39,9 @@ const ExpensesComponent = () => {
       <Box style={{ position: "fixed", bottom: 0, left: 0, backgroundColor: "#e2e2e2", maxWidth: "100vw" }}>
         <Tabs
           value={currentTab}
-          onChange={(data) => { console.log(data) }}
+          onChange={handleTabChange}
           variant="scrollable"
-          scrollButtons={true}
+          scrollButtons="auto"
           aria-label="scrollable prevent tabs example"
         >
           <Tab label="Item One" />

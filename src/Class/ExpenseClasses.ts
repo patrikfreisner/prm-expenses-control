@@ -51,6 +51,12 @@ export class ExpenseDateTime extends Date {
         month = month.length == 1 ? "0" + month : month;
         return `${month}/${this.getFullYear()}`;
     }
+
+    public toFilterString = (): string => {
+        let month: string = (this.getMonth() + 1).toString();
+        month = month.length == 1 ? "0" + month : month;
+        return `${this.getFullYear()}#${month}#`;
+    }
 }
 
 export class Expense extends DynamoDBObject {
@@ -131,4 +137,53 @@ export class Expense extends DynamoDBObject {
         }
     }
 
+}
+
+export class Month extends DynamoDBObject {
+    constructor(month: {
+        pk?: string, sk?: string, income?: number, expenseResume?: number, isClosedMonth?: boolean
+    }) {
+        super(month.pk, month.sk);
+        this.pk = month?.pk || '';
+        this.sk = month?.sk || '';
+        this.income = month?.income || 0;
+        this.expenseResume = month?.expenseResume || 0;
+        this.isClosedMonth = month?.isClosedMonth || false;
+        this.year = this.sk ? this.sk.split('#')[1] : '';
+        this.month = this.sk ? this.sk.split('#')[2] : '';
+    }
+    income: number;
+    expenseResume: number;
+    isClosedMonth: boolean;
+
+    private year: string;
+    private month: string;
+
+    getYear(): string {
+        return this.year;
+    }
+
+    getMonth(): string {
+        return this.month;
+    }
+
+    getDateObject(): Date {
+        let date = new Date();
+        date.setMonth(parseInt(this.getMonth()) - 1);
+        date.setFullYear(parseInt(this.getYear()));
+        return date;
+    }
+
+    setMonthStdKeys(userId: string, month: string, year: string): void {
+        this.pk = 'USER#' + userId;
+        month = month.length == 1 ? '0' + month : month;
+
+        this.sk =
+            "MONTH" +
+            '#' +
+            year +
+            '#' +
+            month +
+            '#';
+    }
 }

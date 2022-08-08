@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import React, { createContext, useState, useContext } from 'react'
-import { Expense } from '../Class/ExpenseClasses';
+import { Expense, ExpenseDateTime } from '../Class/ExpenseClasses';
 import { queryItems, createItem, updateItem, deleteItem } from '../Services/InvokeAWS/InvokeBaseDynamoDBAPI';
 import { useLoginContext } from './LoginContext';
 
@@ -9,6 +9,8 @@ const TABLE = "PRMDB001";
 interface ExpensesInterface {
     expensesValues: Expense[],
     setExpensesValues: Function,
+    currentMonth: ExpenseDateTime,
+    setCurrentMonth: Function
 }
 
 export const ExpensesContext = createContext(new Object() as ExpensesInterface)
@@ -16,12 +18,15 @@ ExpensesContext.displayName = 'ExpensesContext'
 
 export const ExpensesProvider = ({ children }: any) => {
     const [expensesValues, setExpensesValues] = useState(new Array<Expense>());
+    const [currentMonth, setCurrentMonth] = useState(new ExpenseDateTime());
 
     return (
         <ExpensesContext.Provider
             value={{
                 expensesValues,
-                setExpensesValues
+                setExpensesValues,
+                currentMonth,
+                setCurrentMonth
             }}>
             {children}
         </ExpensesContext.Provider>
@@ -31,19 +36,23 @@ export const ExpensesProvider = ({ children }: any) => {
 export const useExpensesContext = () => {
     const {
         expensesValues,
-        setExpensesValues
+        setExpensesValues,
+        currentMonth,
+        setCurrentMonth
     } = useContext<ExpensesInterface>(ExpensesContext);
 
     const { userData } = useLoginContext();
 
     function getUserExpenses(): Promise<AxiosResponse<Expense, any>> {
         const response = queryItems(TABLE, {
-            KeyConditionExpression: '#pk = :pk',
+            KeyConditionExpression: '#pk = :pk and begins_with(#sk, :sk)',
             ExpressionAttributeNames: {
-                "#pk": "pk"
+                "#pk": "pk",
+                "#sk": "sk"
             },
             ExpressionAttributeValues: {
-                ":pk": "USER#" + userData.sub
+                ":pk": "USER#" + userData.sub,
+                ":sk": currentMonth.toFilterString()
             }
         });
         response.then((response) => {
