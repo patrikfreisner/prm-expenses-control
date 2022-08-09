@@ -149,22 +149,17 @@ export class Month extends DynamoDBObject {
         this.income = month?.income || 0;
         this.expenseResume = month?.expenseResume || 0;
         this.isClosedMonth = month?.isClosedMonth || false;
-        this.year = this.sk ? this.sk.split('#')[1] : '';
-        this.month = this.sk ? this.sk.split('#')[2] : '';
     }
     income: number;
     expenseResume: number;
     isClosedMonth: boolean;
 
-    private year: string;
-    private month: string;
-
     getYear(): string {
-        return this.year;
+        return this.sk.split('#')[1] || '';
     }
 
     getMonth(): string {
-        return this.month;
+        return this.sk.split('#')[2] || '';
     }
 
     getDateObject(): Date {

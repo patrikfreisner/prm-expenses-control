@@ -20,7 +20,6 @@ const ExpensesComponent = () => {
   useEffect(() => {
     getUserExpenses().catch(() => {
       addAlertEvent({
-        event_id: "EXPENSES_RETRIEVE",
         name: "EXPENSES_RETRIEVE",
         message: "Um problema ocorreu ao carregar suas informações, você está conectado a internet?",
         type: "error"
@@ -36,12 +35,12 @@ const ExpensesComponent = () => {
         <ExpenseLaneComponent name={"Fixa"} type={"FIXED_EXPENSE"} />
       </Grid>
       <ExpenseSpeedDialComponent />
-      <Box style={{ position: "fixed", bottom: 0, left: 0, backgroundColor: "#e2e2e2", maxWidth: "100vw" }}>
+      {/* <Box style={{ position: "fixed", bottom: 0, left: 0, backgroundColor: "#e2e2e2", maxWidth: "100vw" }}>
         <Tabs
           value={currentTab}
           onChange={handleTabChange}
           variant="scrollable"
-          scrollButtons="auto"
+          scrollButtons={true}
           aria-label="scrollable prevent tabs example"
         >
           <Tab label="Item One" />
@@ -52,7 +51,7 @@ const ExpensesComponent = () => {
           <Tab label="Item Six" />
           <Tab label="Item Seven" />
         </Tabs>
-      </Box>
+      </Box> */}
     </>
   )
 }

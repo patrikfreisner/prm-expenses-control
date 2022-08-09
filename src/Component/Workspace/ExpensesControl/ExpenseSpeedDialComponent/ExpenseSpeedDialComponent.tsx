@@ -13,48 +13,43 @@ import { ExpenseInsertUpdateComponent } from '../ExpenseInsertUpdateComponent/Ex
 import { useEventHandlerContext } from '../../../../Context/EventHandlerContext';
 
 import './ExpenseSpeedDialStyle.css';
+import { MonthInsertUpdateComponent } from '../MonthInsertUpdateComponent/MonthInsertUpdateComponent';
 
 const ExpenseSpeedDialComponent = () => {
-    const { addAlertEvent } = useEventHandlerContext();
+    const [showBackdrop, setShowBackdrop] = useState(false);
+    const [showExpenseDialog, setShowExpenseDialog] = useState(false);
+    const [showMonthDialog, setShowMonthDialog] = useState(true);
 
-    const [open, setOpen] = useState(false);
-    const [openDialog, setOpenDialog] = useState(false);
+    const handleExpenseDialogOpen = () => setShowExpenseDialog(true);
+    const handleExpenseDialogClose = () => { setShowExpenseDialog(false); setShowBackdrop(false); };
 
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const handleCloseAction = () => setOpenDialog(true);
-    const handleCloseDialog = () => { setOpenDialog(false); setOpen(false); };
+    const handleMonthDialogOpen = () => setShowMonthDialog(true);
+    const handleMonthDialogClose = () => { setShowMonthDialog(false); setShowBackdrop(false); };
 
     const actions = [
         {
             icon: <NoteAddIcon />,
             name: 'Nova despesa',
-            handlerAction: handleCloseAction
+            handlerAction: handleExpenseDialogOpen
         },
         {
             icon: <EventIcon />,
             name: 'Iniciar novo Mês',
-            handlerAction: () => {
-                addAlertEvent({
-                    name: "TESTE",
-                    message: "tes tes tes te te te",
-                    type: 'info'
-                })
-            }
+            handlerAction: handleMonthDialogOpen
         },
     ];
 
     return (
         <>
             <Box>
-                <Backdrop open={open} />
+                <Backdrop open={showBackdrop} />
                 <SpeedDial
                     ariaLabel="Componente para cadastrar novas despesas"
                     sx={{ position: 'fixed', bottom: 45, right: 16 }}
                     icon={<SpeedDialIcon />}
-                    onClose={handleClose}
-                    onOpen={handleOpen}
-                    open={open}
+                    onClose={() => { setShowBackdrop(false) }}
+                    onOpen={() => { setShowBackdrop(true) }}
+                    open={showBackdrop}
                 >
                     {actions.map((action) => (
                         <SpeedDialAction
@@ -67,15 +62,14 @@ const ExpenseSpeedDialComponent = () => {
                 </SpeedDial>
             </Box>
             <Dialog
-                open={openDialog}
-                onClose={handleCloseDialog}
-            // keepMounted  // dialog still exists when focussed out; I've take it off because form doesn't unregister itself;
+                open={showExpenseDialog}
+                onClose={handleExpenseDialogClose}
             >
                 <DialogTitle align='left'>
                     Nova despesa
                     <IconButton
                         aria-label="close"
-                        onClick={handleCloseDialog}
+                        onClick={handleExpenseDialogClose}
                         sx={{
                             position: 'absolute',
                             right: 16,
@@ -86,7 +80,29 @@ const ExpenseSpeedDialComponent = () => {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <ExpenseInsertUpdateComponent onSuccess={handleCloseDialog} onFailed={handleCloseDialog} onCancel={handleCloseDialog} />
+                    <ExpenseInsertUpdateComponent onSuccess={handleExpenseDialogClose} onFailed={handleExpenseDialogClose} onCancel={handleExpenseDialogClose} />
+                </DialogContent>
+            </Dialog>
+            <Dialog
+                open={showMonthDialog}
+                onClose={handleMonthDialogClose}
+            >
+                <DialogTitle align='left'>
+                    Novo mês
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleMonthDialogClose}
+                        sx={{
+                            position: 'absolute',
+                            right: 16,
+                            top: 16,
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <MonthInsertUpdateComponent onSuccess={handleMonthDialogClose} onFailed={handleMonthDialogClose} onCancel={handleMonthDialogClose} />
                 </DialogContent>
             </Dialog>
         </>
