@@ -1,6 +1,8 @@
-import { Button, FormControlLabel, Grid } from '@mui/material';
-import React, { useState } from 'react'
+import { Button, FormControlLabel, Grid, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
+import { ExpenseDateTime } from '../../../../Class/ExpenseClasses';
+import { ControlledDatePicker } from '../../../PrimumComponents/FormBuilderV2/ControlledDatePicker';
 import { ControlledNumericField } from '../../../PrimumComponents/FormBuilderV2/ControlledNumericField';
 import { ControlledSwitch } from '../../../PrimumComponents/FormBuilderV2/ControlledSwitch';
 import { ControlledTextField } from '../../../PrimumComponents/FormBuilderV2/ControlledTextField';
@@ -16,6 +18,14 @@ interface MonthInsertUpdateComponentParam {
 
 export const MonthInsertUpdateComponent = ({ formInitialValue, onSuccess, onFailed, onCancel, ...props }: MonthInsertUpdateComponentParam) => {
     const [isFormLoading, setIsFormLoading] = useState(false);
+    const [monthDateRef, setMonthDateRef] = useState(new ExpenseDateTime());
+
+    useEffect(() => {
+        let _month: ExpenseDateTime = new ExpenseDateTime();
+        _month.setMonth(_month.getMonth() + 1);
+        setMonthDateRef(_month);
+    }, []);
+
     let initialValues = formInitialValue || {
         income: "",
         expenseResume: "",
@@ -28,12 +38,15 @@ export const MonthInsertUpdateComponent = ({ formInitialValue, onSuccess, onFail
     });
 
     const onSubmitHandler = () => {
-
+        setIsFormLoading(true);
     }
 
     return (
         <>
             <Grid className="main-form-container" container spacing={2}>
+                <Grid item xs={12}>
+                    <Typography variant='body2'> Você irá criar o registro para {monthDateRef.toString()}! </Typography>
+                </Grid>
                 <Grid item xs={12}>
                     <ControlledNumericField
                         className="formInput"
