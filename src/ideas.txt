@@ -1,0 +1,24 @@
+- - Para Expenses
+
+- Criar campo "ReferenceExpensePK";
+- Criar campo "ReferenceExpenseSK";
+- Criar campo "Category";
+
+- Ao criar despesa fixa ou recorrente atribuir campo pk e sk do item "pai" aos campos "ReferenceExpensePK" e "ReferenceExpenseSK" respectivamente;
+
+- Criar classe para mês atual
+
+- Criar novo mês
+  - PROCESSO: Criar Mês (gravar registro) -> Importar informações do ultimo mês (gravar registros no mês atual) -> Direcionar usuário ao mês atual; 
+  - Se mês atual não existe, criar atual;
+  - Se mês atual existe, criar proximo;
+  - Realizar importações do ultimo mês (CRIAR LOGICA DE IMPORTAÇÃO A PARTE)
+  - - Exibir lista de itens importados na criação do mês;
+      - Inicialmente todas as despesas vem marcadas (salvo despesas variaveis);
+      - Apenas despesas fixas e variaveis podem ser desmarcadas;
+      - Despesas recorrentes são para validação apenas, read-only, não podendo ser desmarcadas;
+      - Despesas variaveis vem desmarcadas por padrão, caso marcadas elas criam um registro com mesma descrição e valor = R$ 0,00;
+
+- Apagar despesa do tipo "Recorrente":
+  - Exibir mensagem: "Deseja encerrar recorrencia?"
+  - Apagar apenas recorrencia atual;
