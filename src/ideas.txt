@@ -1,3 +1,9 @@
+- - -
+- - Processo de busca de dados do ultimo mês
+
+- So posso buscar do ultimo mês (ref currentMonth) \/ Posso criar qualquer mês
+- Posso buscar dos 'N' ultimos messes \/ Não posso criar qualquer, mês apenas atual
+
 - - Para Expenses
 
 - Criar campo "ReferenceExpensePK";

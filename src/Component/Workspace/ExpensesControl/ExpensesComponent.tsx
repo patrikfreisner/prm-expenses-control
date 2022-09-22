@@ -1,12 +1,13 @@
 import { Box, Grid, Tab, Tabs } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { ExpenseDateTime } from "../../../Class/ExpenseClasses"
+import { Expense, ExpenseDateTime } from "../../../Class/ExpenseClasses"
 import { useEventHandlerContext } from "../../../Context/EventHandlerContext"
 import { useExpensesContext } from "../../../Context/ExpensesContext"
 import ExpenseLaneComponent from "./ExpenseLaneComponent/ExpenseLaneComponent"
 import ExpenseSpeedDialComponent from "./ExpenseSpeedDialComponent/ExpenseSpeedDialComponent"
 
 import "./ExpensesStyle.css"
+import { MonthBreadcrumbComponent } from "./MonthBreadcrumbComponent/MonthBreadcrumbComponent"
 
 const ExpensesComponent = () => {
   const { getUserExpenses, loadUserExpenses, preProccessUserExpenses } = useExpensesContext();
@@ -23,7 +24,8 @@ const ExpensesComponent = () => {
 
   loadUserExpenses(_month).then(
     (data: any) => {
-      console.log(">>> dados", preProccessUserExpenses(data));
+      let _data: Array<Expense> = preProccessUserExpenses(data);
+      console.log(">>> Data: ", _data);
     }
   );
 
@@ -40,6 +42,7 @@ const ExpensesComponent = () => {
   return (
     <>
       <Grid className="expensesLaneContainer" container spacing={2}>
+        <MonthBreadcrumbComponent />
         <ExpenseLaneComponent name={"Recorrente"} type={"RECURRING_EXPENSE"} />
         <ExpenseLaneComponent name={"Variavel"} type={"VARIABLE_EXPENSE"} />
         <ExpenseLaneComponent name={"Fixa"} type={"FIXED_EXPENSE"} />
