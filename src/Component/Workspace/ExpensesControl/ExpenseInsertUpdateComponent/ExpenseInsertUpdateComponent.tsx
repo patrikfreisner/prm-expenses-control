@@ -159,7 +159,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                         autoComplete="false"
                     />
                 </Grid>
-                <Grid item xs={12} md={6} lg={6}>
+                <Grid item xs={6} md={6} lg={6}>
                     <FormControlLabel
                         label={"Recorrente?"}
                         labelPlacement={"top"}
@@ -170,7 +170,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                 </Grid>
                 {watchForIsRecurring &&
                     <>
-                        <Grid item xs={12} md={6} lg={6}>
+                        <Grid item xs={6} md={6} lg={6}>
                             <FormControlLabel
                                 label={"Desp. Fixa?"}
                                 labelPlacement={"top"}

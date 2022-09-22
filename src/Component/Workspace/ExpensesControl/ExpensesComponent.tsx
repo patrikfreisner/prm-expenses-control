@@ -1,5 +1,6 @@
 import { Box, Grid, Tab, Tabs } from "@mui/material"
 import React, { useEffect, useState } from "react"
+import { ExpenseDateTime } from "../../../Class/ExpenseClasses"
 import { useEventHandlerContext } from "../../../Context/EventHandlerContext"
 import { useExpensesContext } from "../../../Context/ExpensesContext"
 import ExpenseLaneComponent from "./ExpenseLaneComponent/ExpenseLaneComponent"
@@ -8,7 +9,7 @@ import ExpenseSpeedDialComponent from "./ExpenseSpeedDialComponent/ExpenseSpeedD
 import "./ExpensesStyle.css"
 
 const ExpensesComponent = () => {
-  const { getUserExpenses } = useExpensesContext();
+  const { getUserExpenses, loadUserExpenses, preProccessUserExpenses } = useExpensesContext();
   const { addAlertEvent } = useEventHandlerContext();
 
   const [currentTab, setCurrentTab] = useState(0);
@@ -16,6 +17,15 @@ const ExpensesComponent = () => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
   };
+
+  let _month = new ExpenseDateTime();
+  _month.setMonth(_month.getMonth() - 2);
+
+  loadUserExpenses(_month).then(
+    (data: any) => {
+      console.log(">>> dados", preProccessUserExpenses(data));
+    }
+  );
 
   useEffect(() => {
     getUserExpenses().catch(() => {
@@ -35,23 +45,6 @@ const ExpensesComponent = () => {
         <ExpenseLaneComponent name={"Fixa"} type={"FIXED_EXPENSE"} />
       </Grid>
       <ExpenseSpeedDialComponent />
-      {/* <Box style={{ position: "fixed", bottom: 0, left: 0, backgroundColor: "#e2e2e2", maxWidth: "100vw" }}>
-        <Tabs
-          value={currentTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons={true}
-          aria-label="scrollable prevent tabs example"
-        >
-          <Tab label="Item One" />
-          <Tab label="Item Two" />
-          <Tab label="Item Three" />
-          <Tab label="Item Four" />
-          <Tab label="Item Five" />
-          <Tab label="Item Six" />
-          <Tab label="Item Seven" />
-        </Tabs>
-      </Box> */}
     </>
   )
 }

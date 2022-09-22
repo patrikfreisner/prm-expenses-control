@@ -43,7 +43,10 @@ export const useExpensesContext = () => {
 
     const { userData } = useLoginContext();
 
-    function getUserExpenses(): Promise<AxiosResponse<Expense, any>> {
+    function getUserExpenses(refMonth?: ExpenseDateTime, avoidContext?: boolean): Promise<AxiosResponse<Expense, any>> {
+        let _refMonth: ExpenseDateTime = refMonth || currentMonth;
+        let _avoidContext: boolean = avoidContext || true;
+
         const response = queryItems(TABLE, {
             KeyConditionExpression: '#pk = :pk and begins_with(#sk, :sk)',
             ExpressionAttributeNames: {
@@ -52,7 +55,7 @@ export const useExpensesContext = () => {
             },
             ExpressionAttributeValues: {
                 ":pk": "USER#" + userData.sub,
-                ":sk": currentMonth.toFilterString()
+                ":sk": _refMonth.toFilterString()
             }
         });
         response.then((response) => {
@@ -61,9 +64,21 @@ export const useExpensesContext = () => {
                 expenseList.push(new Expense(element));
             });
 
-            setExpensesValues(expenseList);
+            if (!_avoidContext) setExpensesValues(expenseList);
         });
         return response;
+    }
+
+    function loadUserExpenses(refMonth: ExpenseDateTime): Promise<AxiosResponse<Expense, any>> {
+        return getUserExpenses(refMonth, false);
+    }
+
+    function preProccessUserExpenses(responseData: AxiosResponse<any, any>): Array<Expense> {
+        let _expenseList: Array<Expense> = new Array<Expense>();
+        responseData.data.Items.forEach((element: any) => {
+            _expenseList.push(new Expense(element));
+        });
+        return _expenseList;
     }
 
     function createExpenses(values: Expense): Promise<AxiosResponse<any, any>> {
@@ -155,6 +170,8 @@ export const useExpensesContext = () => {
         createExpenses,
         updateExpenses,
         updateIsPaidExpenses,
-        deleteExpense
+        deleteExpense,
+        loadUserExpenses,
+        preProccessUserExpenses
     };
 }
