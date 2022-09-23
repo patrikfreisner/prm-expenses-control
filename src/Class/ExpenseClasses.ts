@@ -162,15 +162,14 @@ export class Month extends DynamoDBObject {
         return this.sk.split('#')[2] || '';
     }
 
-    getDateObject(): Date {
-        let date = new Date();
+    getDateObject(): ExpenseDateTime {
+        let date = new ExpenseDateTime();
         date.setMonth(parseInt(this.getMonth()) - 1);
         date.setFullYear(parseInt(this.getYear()));
         return date;
     }
 
-    setMonthStdKeys(userId: string, month: string, year: string): void {
-        this.pk = 'USER#' + userId;
+    setMonthStdKeys(month: string, year: string): void {
         month = month.length == 1 ? '0' + month : month;
 
         this.sk =
@@ -178,7 +177,6 @@ export class Month extends DynamoDBObject {
             '#' +
             year +
             '#' +
-            month +
-            '#';
+            month
     }
 }

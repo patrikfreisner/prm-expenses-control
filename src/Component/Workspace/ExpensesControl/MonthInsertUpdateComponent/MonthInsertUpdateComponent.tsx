@@ -1,7 +1,9 @@
 import { Button, FormControlLabel, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { ExpenseDateTime } from '../../../../Class/ExpenseClasses';
+import { ExpenseDateTime, Month } from '../../../../Class/ExpenseClasses';
+import { useEventHandlerContext } from '../../../../Context/EventHandlerContext';
+import { useExpensesContext } from '../../../../Context/ExpensesContext';
 import { ControlledDatePicker } from '../../../PrimumComponents/FormBuilderV2/ControlledDatePicker';
 import { ControlledNumericField } from '../../../PrimumComponents/FormBuilderV2/ControlledNumericField';
 import { ControlledSwitch } from '../../../PrimumComponents/FormBuilderV2/ControlledSwitch';
@@ -19,6 +21,8 @@ interface MonthInsertUpdateComponentParam {
 export const MonthInsertUpdateComponent = ({ formInitialValue, onSuccess, onFailed, onCancel, ...props }: MonthInsertUpdateComponentParam) => {
     const [isFormLoading, setIsFormLoading] = useState(false);
     const [monthDateRef, setMonthDateRef] = useState(new ExpenseDateTime());
+    const { createMonth } = useExpensesContext();
+    const { addAlertEvent } = useEventHandlerContext();
 
     useEffect(() => {
         let _month: ExpenseDateTime = new ExpenseDateTime();
@@ -37,8 +41,31 @@ export const MonthInsertUpdateComponent = ({ formInitialValue, onSuccess, onFail
         mode: "all"
     });
 
-    const onSubmitHandler = () => {
+    const onSubmitHandler = (values: any) => {
+        let _month: Month = new Month(values);
         setIsFormLoading(true);
+
+        if (!formInitialValue) {
+            _month.setMonthStdKeys(monthDateRef.getMonth().toString(), monthDateRef.getFullYear().toString());
+        }
+
+        createMonth(_month).then(() => {
+            setIsFormLoading(false);
+            addAlertEvent({
+                name: "MONTH-CREATION-SUCCESS",
+                message: "Mês criado com sucesso!!",
+                type: "success"
+            });
+            if (onSuccess) onSuccess();
+        }).catch(() => {
+            setIsFormLoading(false);
+            addAlertEvent({
+                name: "MONTH-CREATION-FAILED",
+                message: "Não foi possivel criar novo mês!",
+                type: "error"
+            });
+            if (onFailed) onFailed();
+        });
     }
 
     return (

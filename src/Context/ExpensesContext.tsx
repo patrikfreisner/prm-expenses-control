@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
+import { setMonth } from 'date-fns';
 import React, { createContext, useState, useContext } from 'react'
-import { Expense, ExpenseDateTime } from '../Class/ExpenseClasses';
+import { Expense, ExpenseDateTime, Month } from '../Class/ExpenseClasses';
 import { queryItems, createItem, updateItem, deleteItem } from '../Services/InvokeAWS/InvokeBaseDynamoDBAPI';
 import { useLoginContext } from './LoginContext';
 
@@ -9,6 +10,8 @@ const TABLE = "PRMDB001";
 interface ExpensesInterface {
     expensesValues: Expense[],
     setExpensesValues: Function,
+    monthValues: Month[],
+    setMonthValues: Function,
     currentMonth: ExpenseDateTime,
     setCurrentMonth: Function
 }
@@ -18,6 +21,8 @@ ExpensesContext.displayName = 'ExpensesContext'
 
 export const ExpensesProvider = ({ children }: any) => {
     const [expensesValues, setExpensesValues] = useState(new Array<Expense>());
+    const [monthValues, setMonthValues] = useState(new Array<Month>());
+    // Validate to set "currentMonth" as "Month" class;
     const [currentMonth, setCurrentMonth] = useState(new ExpenseDateTime());
 
     return (
@@ -25,6 +30,8 @@ export const ExpensesProvider = ({ children }: any) => {
             value={{
                 expensesValues,
                 setExpensesValues,
+                monthValues,
+                setMonthValues,
                 currentMonth,
                 setCurrentMonth
             }}>
@@ -37,6 +44,8 @@ export const useExpensesContext = () => {
     const {
         expensesValues,
         setExpensesValues,
+        monthValues,
+        setMonthValues,
         currentMonth,
         setCurrentMonth
     } = useContext<ExpensesInterface>(ExpensesContext);
@@ -69,6 +78,11 @@ export const useExpensesContext = () => {
         return response;
     }
 
+    function getUserMonths(): Promise<AxiosResponse<Month, any>> {
+        let x: any = null;
+        return x;
+    }
+
     function loadUserExpenses(refMonth: ExpenseDateTime): Promise<AxiosResponse<Expense, any>> {
         return getUserExpenses(refMonth, false);
     }
@@ -81,7 +95,7 @@ export const useExpensesContext = () => {
         return _expenseList;
     }
 
-    function createExpenses(values: Expense): Promise<AxiosResponse<any, any>> {
+    function createExpenses(values: Expense): Promise<AxiosResponse<Expense, any>> {
         values.pk = "USER#" + userData.sub;
         const response = createItem(TABLE, {
             Item: values,
@@ -97,6 +111,27 @@ export const useExpensesContext = () => {
         });
         response.then((data) => {
             if (data.config.data) setExpensesValues([...expensesValues, new Expense(JSON.parse(data.config.data).Item)]);
+        });
+
+        return response;
+    }
+
+    function createMonth(values: Month): Promise<AxiosResponse<Month, any>> {
+        values.pk = "USER#" + userData.sub;
+        const response = createItem(TABLE, {
+            Item: values,
+            Expected: {
+                "pk": {
+                    Exists: false
+                },
+                "sk": {
+                    Exists: false
+                }
+            },
+            ReturnValues: 'ALL_OLD'
+        });
+        response.then((data) => {
+            if (data.config.data) setMonthValues(new Month(JSON.parse(data.config.data).Item));
         });
 
         return response;
@@ -134,6 +169,37 @@ export const useExpensesContext = () => {
         return response;
     }
 
+    function updateMonth(values: Month): Promise<AxiosResponse<Month, any>> {
+        const response = createItem(TABLE, {
+            Item: values,
+            Expected: {
+                "pk": {
+                    Exists: true,
+                    Value: values.pk
+                },
+                "sk": {
+                    Exists: true,
+                    Value: values.sk
+                }
+            },
+            ReturnValues: 'NONE'
+        });
+        response.then(() => {
+            let _tempExp: Month[] = [];
+            monthValues.forEach((_month: Month) => {
+                if (_month.sk !== values.sk) {
+                    _tempExp.push(_month);
+                } else {
+                    _tempExp.push(values);
+                }
+            })
+            setMonthValues([..._tempExp, values]);
+            console.log(monthValues);
+        });
+
+        return response;
+    }
+
     function updateIsPaidExpenses(expense: Expense, isPaid: boolean): Promise<AxiosResponse<any, any>> {
         const response = updateItem(TABLE, {
             Key: {
@@ -154,11 +220,21 @@ export const useExpensesContext = () => {
         return response;
     }
 
-    function deleteExpense(_deleteExpense: Expense): Promise<AxiosResponse<any, any>> {
-        const response = deleteItem(TABLE, _deleteExpense.pk, _deleteExpense.sk);
+    function deleteExpense(deleteExpense: Expense): Promise<AxiosResponse<any, any>> {
+        const response = deleteItem(TABLE, deleteExpense.pk, deleteExpense.sk);
         response.then(() => {
             setExpensesValues(expensesValues.filter((currentExpense: Expense) => {
-                return currentExpense !== _deleteExpense;
+                return currentExpense !== deleteExpense;
+            }))
+        });
+        return response;
+    }
+
+    function deleteMonth(deleteMonth: Month): Promise<AxiosResponse<any, any>> {
+        const response = deleteItem(TABLE, deleteMonth.pk, deleteMonth.sk);
+        response.then(() => {
+            setExpensesValues(monthValues.filter((_month: Month) => {
+                return _month !== deleteMonth;
             }))
         });
         return response;
@@ -168,9 +244,12 @@ export const useExpensesContext = () => {
         expensesValues,
         getUserExpenses,
         createExpenses,
+        createMonth,
         updateExpenses,
+        updateMonth,
         updateIsPaidExpenses,
         deleteExpense,
+        deleteMonth,
         loadUserExpenses,
         preProccessUserExpenses
     };

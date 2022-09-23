@@ -15,6 +15,13 @@ export const MonthBreadcrumbComponent = () => {
      * Criar pesquisa que colete dados de X tempo para trás e Y tempo para frente dos registro de mês do usuário;
      * Armazenar em uma context API;
      * Coletar dados a partir da context API;
+     * 
+     * 
+     * Status Mês:
+     *  - Não há registro | Cor: ?
+     *  - Há registro | Cor: ?
+     *  - Mês esta fechado | Cor: ?
+     *  - Mês atual | Cor: ?
      */
 
     const createMonthList = (currentMonth: ExpenseDateTime, backward: number, forward: number): Array<any> => {
