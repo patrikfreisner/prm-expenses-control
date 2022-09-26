@@ -81,6 +81,7 @@ export const useExpensesContext = () => {
     function getUserMonths(currentDateMonth: ExpenseDateTime, backward: number, forward: number): Promise<AxiosResponse<Month, any>> {
         currentDateMonth = currentMonth || new ExpenseDateTime();
 
+        // Not getting data yet!
         let _expAttrValues: any = {};
         for (let i in Array.from(Array(backward).keys())) {
             let index = parseInt(i) - backward;
