@@ -12,7 +12,7 @@ interface ExpensesInterface {
     setExpensesValues: Function,
     monthValues: Month[],
     setMonthValues: Function,
-    currentMonth: ExpenseDateTime,
+    currentMonth: Month,
     setCurrentMonth: Function
 }
 
@@ -23,7 +23,7 @@ export const ExpensesProvider = ({ children }: any) => {
     const [expensesValues, setExpensesValues] = useState(new Array<Expense>());
     const [monthValues, setMonthValues] = useState(new Array<Month>());
     // Validate to set "currentMonth" as "Month" class;
-    const [currentMonth, setCurrentMonth] = useState(new ExpenseDateTime());
+    const [currentMonth, setCurrentMonth] = useState(new Month({}));
 
     return (
         <ExpensesContext.Provider
@@ -53,7 +53,7 @@ export const useExpensesContext = () => {
     const { userData } = useLoginContext();
 
     function getUserExpenses(refMonth?: ExpenseDateTime, avoidContext?: boolean): Promise<AxiosResponse<Expense, any>> {
-        let _refMonth: ExpenseDateTime = refMonth || currentMonth;
+        let _refMonth: ExpenseDateTime = refMonth || currentMonth.getDateObject();
         let _avoidContext: boolean = avoidContext || true;
 
         const response = queryItems(TABLE, {
@@ -78,44 +78,19 @@ export const useExpensesContext = () => {
         return response;
     }
 
-    function getUserMonths(currentDateMonth: ExpenseDateTime, backward: number, forward: number): Promise<AxiosResponse<Month, any>> {
-        currentDateMonth = currentMonth || new ExpenseDateTime();
-
-        // Not getting data yet!
-        let _expAttrValues: any = {};
-        for (let i in Array.from(Array(backward).keys())) {
-            let index = parseInt(i) - backward;
-            let _month = new ExpenseDateTime(currentDateMonth);
-            _month.setMonth(_month.getMonth() - -index);
-
-            _expAttrValues[":sk" + i] = "MONTH#" + _month.toFilterString();
-        }
-
-        _expAttrValues[":sk" + (backward)] = "MONTH#" + currentDateMonth.toFilterString();
-
-        for (let i in Array.from(Array(forward).keys())) {
-            let index = parseInt(i) + 1;
-            let _month = new ExpenseDateTime(currentDateMonth);
-            _month.setMonth(_month.getMonth() + index);
-            _expAttrValues[":sk" + ((backward + 1) + parseInt(i))] = "MONTH#" + _month.toFilterString();
-        }
-
-        let _keyCondExp: Array<string> = [];
-        for (let i in Array.from(Array((backward + forward + 1)).keys())) {
-            _keyCondExp.push("#sk = :sk" + i + "");
-        }
+    function getUserMonths(currentDateMonth: ExpenseDateTime): Promise<AxiosResponse<Month, any>> {
+        currentDateMonth = currentMonth.getDateObject();
 
         const response = queryItems(TABLE, {
-            KeyConditionExpression: '#pk = :pk and ' + _keyCondExp.join(" or ") + '',
+            KeyConditionExpression: '#pk = :pk and begins_with(#sk, :sk)',
             ExpressionAttributeNames: {
                 "#pk": "pk",
                 "#sk": "sk"
             },
             ExpressionAttributeValues: {
                 ":pk": "USER#" + userData.sub,
-                ..._expAttrValues
-            },
-            ConditionalOperator: "OR"
+                ":sk": "MONTH#" + currentDateMonth.getFullYear()
+            }
         });
         response.then((response) => {
             let monthList: Array<Month> = new Array<Month>();
@@ -126,9 +101,6 @@ export const useExpensesContext = () => {
             setMonthValues(monthList);
         });
         return response;
-
-        // let x: any = null;
-        // return x;
     }
 
     function loadUserExpenses(refMonth: ExpenseDateTime): Promise<AxiosResponse<Expense, any>> {
@@ -291,6 +263,8 @@ export const useExpensesContext = () => {
     return {
         expensesValues,
         monthValues,
+        currentMonth,
+        setCurrentMonth,
         getUserExpenses,
         getUserMonths,
         createExpenses,

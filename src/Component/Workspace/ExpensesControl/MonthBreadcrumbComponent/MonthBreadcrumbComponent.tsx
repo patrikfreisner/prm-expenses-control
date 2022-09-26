@@ -4,13 +4,13 @@ import ExpenseSpeedDialComponent from '../ExpenseSpeedDialComponent/ExpenseSpeed
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 import './MonthBreadcrumbStyle.css'
-import { deepOrange } from '@mui/material/colors';
-import { ExpenseDateTime } from '../../../../Class/ExpenseClasses';
+import { deepOrange, blue } from '@mui/material/colors';
+import { ExpenseDateTime, Month } from '../../../../Class/ExpenseClasses';
 import { useExpensesContext } from '../../../../Context/ExpensesContext';
 
 export const MonthBreadcrumbComponent = () => {
 
-    const { getUserMonths, monthValues } = useExpensesContext();
+    const { getUserMonths, monthValues, currentMonth, setCurrentMonth } = useExpensesContext();
     const [month, setMonth] = useState(new ExpenseDateTime());
 
     /**
@@ -27,7 +27,6 @@ export const MonthBreadcrumbComponent = () => {
      */
 
     const createMonthList = (currentMonth: ExpenseDateTime, backward: number, forward: number): Array<any> => {
-        console.log(currentMonth);
         let breadcrumbConfigData: Array<any> = [];
         /**
          * Input: CurrentMonth, backward, forward;
@@ -80,35 +79,36 @@ export const MonthBreadcrumbComponent = () => {
 
     useEffect(() => {
         console.log(createMonthList(month, 4, 1));
-        getUserMonths(new ExpenseDateTime(), 3, 1);
+        getUserMonths(new ExpenseDateTime());
 
         console.log(monthValues);
     }, []);
 
+    const handleChangeMonth = (_month: Month) => {
+        console.log("I've been clicked!", _month);
+        setCurrentMonth(_month);
+    }
+
     return (
         <Grid className='outline-box'>
+            {currentMonth.income}
             <Grid className='breadcrumb-box' item xs={12}>
                 <Breadcrumbs
-                    maxItems={1}
+                    // maxItems={1}
                     itemsAfterCollapse={1}
                     itemsBeforeCollapse={3}
                 // component={() => <h6>Hello</h6>}
                 >
-                    <Avatar sx={{ bgcolor: deepOrange[500] }} variant="square">
-                        06
-                    </Avatar>
-                    <Avatar sx={{ bgcolor: deepOrange[500] }} variant="square">
-                        07
-                    </Avatar>
-                    <Avatar sx={{ bgcolor: deepOrange[500] }} variant="square">
-                        08
-                    </Avatar>
-                    <Avatar sx={{ bgcolor: deepOrange[500] }} variant="square">
-                        09
-                    </Avatar>
-                    <Avatar sx={{ bgcolor: deepOrange[500] }} variant="square">
-                        10
-                    </Avatar>
+                    {monthValues.map((item: Month) => {
+                        return (
+                            <Avatar key={item.pk + item.sk}
+                                sx={{ bgcolor: item.getDateObject().toString() == new ExpenseDateTime().toString() ? blue[700] : deepOrange[500] }}
+                                variant="square"
+                                onClick={() => handleChangeMonth(item)}>
+                                {item.getDateObject().getFormatedMonth()}
+                            </Avatar>
+                        );
+                    })}
                 </Breadcrumbs>
             </Grid>
             <Grid className='divider-box' item xs={12}>

@@ -52,6 +52,12 @@ export class ExpenseDateTime extends Date {
         return `${month}/${this.getFullYear()}`;
     }
 
+    public getFormatedMonth = (): string => {
+        let month: string = (this.getMonth() + 1).toString();
+        month = month.length == 1 ? "0" + month : month;
+        return `${month}`;
+    }
+
     public toFilterString = (): string => {
         let month: string = (this.getMonth() + 1).toString();
         month = month.length == 1 ? "0" + month : month;
@@ -164,8 +170,10 @@ export class Month extends DynamoDBObject {
 
     getDateObject(): ExpenseDateTime {
         let date = new ExpenseDateTime();
-        date.setMonth(parseInt(this.getMonth()) - 1);
-        date.setFullYear(parseInt(this.getYear()));
+        if (this.getMonth() != "" && this.getYear() != "") {
+            date.setMonth(parseInt(this.getMonth()) - 1);
+            date.setFullYear(parseInt(this.getYear()));
+        }
         return date;
     }
 

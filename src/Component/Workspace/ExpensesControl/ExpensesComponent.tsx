@@ -10,7 +10,7 @@ import "./ExpensesStyle.css"
 import { MonthBreadcrumbComponent } from "./MonthBreadcrumbComponent/MonthBreadcrumbComponent"
 
 const ExpensesComponent = () => {
-  const { getUserExpenses, loadUserExpenses, preProccessUserExpenses } = useExpensesContext();
+  const { currentMonth, getUserExpenses, loadUserExpenses, preProccessUserExpenses } = useExpensesContext();
   const { addAlertEvent } = useEventHandlerContext();
 
   // const [currentTab, setCurrentTab] = useState(0);
@@ -25,7 +25,6 @@ const ExpensesComponent = () => {
   loadUserExpenses(_month).then(
     (data: any) => {
       let _data: Array<Expense> = preProccessUserExpenses(data);
-      console.log(">>> Data: ", _data);
     }
   );
 
@@ -37,7 +36,7 @@ const ExpensesComponent = () => {
         type: "error"
       });
     });
-  }, []);
+  }, [currentMonth]);
 
   return (
     <>
