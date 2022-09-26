@@ -13,11 +13,11 @@ const ExpensesComponent = () => {
   const { getUserExpenses, loadUserExpenses, preProccessUserExpenses } = useExpensesContext();
   const { addAlertEvent } = useEventHandlerContext();
 
-  const [currentTab, setCurrentTab] = useState(0);
+  // const [currentTab, setCurrentTab] = useState(0);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setCurrentTab(newValue);
-  };
+  // const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  //   setCurrentTab(newValue);
+  // };
 
   let _month = new ExpenseDateTime();
   _month.setMonth(_month.getMonth() - 2);

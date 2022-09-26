@@ -18,7 +18,7 @@ import { MonthInsertUpdateComponent } from '../MonthInsertUpdateComponent/MonthI
 const ExpenseSpeedDialComponent = () => {
     const [showBackdrop, setShowBackdrop] = useState(false);
     const [showExpenseDialog, setShowExpenseDialog] = useState(false);
-    const [showMonthDialog, setShowMonthDialog] = useState(true);
+    const [showMonthDialog, setShowMonthDialog] = useState(false);
 
     const handleExpenseDialogOpen = () => setShowExpenseDialog(true);
     const handleExpenseDialogClose = () => { setShowExpenseDialog(false); setShowBackdrop(false); };

@@ -55,7 +55,7 @@ export class ExpenseDateTime extends Date {
     public toFilterString = (): string => {
         let month: string = (this.getMonth() + 1).toString();
         month = month.length == 1 ? "0" + month : month;
-        return `${this.getFullYear()}#${month}#`;
+        return `${this.getFullYear()}#${month}`;
     }
 }
 

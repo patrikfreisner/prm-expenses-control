@@ -78,9 +78,56 @@ export const useExpensesContext = () => {
         return response;
     }
 
-    function getUserMonths(): Promise<AxiosResponse<Month, any>> {
-        let x: any = null;
-        return x;
+    function getUserMonths(currentDateMonth: ExpenseDateTime, backward: number, forward: number): Promise<AxiosResponse<Month, any>> {
+        currentDateMonth = currentMonth || new ExpenseDateTime();
+
+        let _expAttrValues: any = {};
+        for (let i in Array.from(Array(backward).keys())) {
+            let index = parseInt(i) - backward;
+            let _month = new ExpenseDateTime(currentDateMonth);
+            _month.setMonth(_month.getMonth() - -index);
+
+            _expAttrValues[":sk" + i] = "MONTH#" + _month.toFilterString();
+        }
+
+        _expAttrValues[":sk" + (backward)] = "MONTH#" + currentDateMonth.toFilterString();
+
+        for (let i in Array.from(Array(forward).keys())) {
+            let index = parseInt(i) + 1;
+            let _month = new ExpenseDateTime(currentDateMonth);
+            _month.setMonth(_month.getMonth() + index);
+            _expAttrValues[":sk" + ((backward + 1) + parseInt(i))] = "MONTH#" + _month.toFilterString();
+        }
+
+        let _keyCondExp: Array<string> = [];
+        for (let i in Array.from(Array((backward + forward + 1)).keys())) {
+            _keyCondExp.push("#sk = :sk" + i + "");
+        }
+
+        const response = queryItems(TABLE, {
+            KeyConditionExpression: '#pk = :pk and ' + _keyCondExp.join(" or ") + '',
+            ExpressionAttributeNames: {
+                "#pk": "pk",
+                "#sk": "sk"
+            },
+            ExpressionAttributeValues: {
+                ":pk": "USER#" + userData.sub,
+                ..._expAttrValues
+            },
+            ConditionalOperator: "OR"
+        });
+        response.then((response) => {
+            let monthList: Array<Month> = new Array<Month>();
+            response.data.Items.forEach((element: any) => {
+                monthList.push(new Month(element));
+            });
+
+            setMonthValues(monthList);
+        });
+        return response;
+
+        // let x: any = null;
+        // return x;
     }
 
     function loadUserExpenses(refMonth: ExpenseDateTime): Promise<AxiosResponse<Expense, any>> {
@@ -242,7 +289,9 @@ export const useExpensesContext = () => {
 
     return {
         expensesValues,
+        monthValues,
         getUserExpenses,
+        getUserMonths,
         createExpenses,
         createMonth,
         updateExpenses,

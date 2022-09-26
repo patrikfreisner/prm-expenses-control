@@ -6,9 +6,11 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import './MonthBreadcrumbStyle.css'
 import { deepOrange } from '@mui/material/colors';
 import { ExpenseDateTime } from '../../../../Class/ExpenseClasses';
+import { useExpensesContext } from '../../../../Context/ExpensesContext';
 
 export const MonthBreadcrumbComponent = () => {
 
+    const { getUserMonths, monthValues } = useExpensesContext();
     const [month, setMonth] = useState(new ExpenseDateTime());
 
     /**
@@ -78,7 +80,10 @@ export const MonthBreadcrumbComponent = () => {
 
     useEffect(() => {
         console.log(createMonthList(month, 4, 1));
-    });
+        getUserMonths(new ExpenseDateTime(), 3, 1);
+
+        console.log(monthValues);
+    }, []);
 
     return (
         <Grid className='outline-box'>
