@@ -54,7 +54,7 @@ export const useExpensesContext = () => {
 
     function getUserExpenses(refMonth?: ExpenseDateTime, avoidContext?: boolean): Promise<AxiosResponse<Expense, any>> {
         let _refMonth: ExpenseDateTime = refMonth || currentMonth.getDateObject();
-        let _avoidContext: boolean = avoidContext || true;
+        let _avoidContext: boolean = avoidContext || false;
 
         const response = queryItems(TABLE, {
             KeyConditionExpression: '#pk = :pk and begins_with(#sk, :sk)',
@@ -95,7 +95,9 @@ export const useExpensesContext = () => {
         response.then((response) => {
             let monthList: Array<Month> = new Array<Month>();
             response.data.Items.forEach((element: any) => {
-                monthList.push(new Month(element));
+                let _month: Month = new Month(element);
+                if (_month.getDateObject().toString() == new ExpenseDateTime().toString()) setCurrentMonth(_month);
+                monthList.push(_month);
             });
 
             setMonthValues(monthList);
@@ -104,7 +106,7 @@ export const useExpensesContext = () => {
     }
 
     function loadUserExpenses(refMonth: ExpenseDateTime): Promise<AxiosResponse<Expense, any>> {
-        return getUserExpenses(refMonth, false);
+        return getUserExpenses(refMonth, true);
     }
 
     function preProccessUserExpenses(responseData: AxiosResponse<any, any>): Array<Expense> {

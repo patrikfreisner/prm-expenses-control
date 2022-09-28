@@ -14,7 +14,7 @@ interface ExpenseLaneComponentParams {
 }
 
 function ExpenseLaneComponent({ name, type }: ExpenseLaneComponentParams) {
-    const { expensesValues } = useExpensesContext();
+    const { currentMonth, expensesValues } = useExpensesContext();
 
     const [currentLaneExpenses, setCurrentLaneExpenses] = useState(Array<Expense>());
     const [expenseTotalValue, setExpenseTotalValue] = useState(0);

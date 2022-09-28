@@ -19,14 +19,14 @@ const ExpensesComponent = () => {
   //   setCurrentTab(newValue);
   // };
 
-  let _month = new ExpenseDateTime();
-  _month.setMonth(_month.getMonth() - 2);
+  // let _month = new ExpenseDateTime();
+  // _month.setMonth(_month.getMonth() - 2);
 
-  loadUserExpenses(_month).then(
-    (data: any) => {
-      let _data: Array<Expense> = preProccessUserExpenses(data);
-    }
-  );
+  // loadUserExpenses(_month).then(
+  //   (data: any) => {
+  //     let _data: Array<Expense> = preProccessUserExpenses(data);
+  //   }
+  // );
 
   useEffect(() => {
     getUserExpenses().catch(() => {
