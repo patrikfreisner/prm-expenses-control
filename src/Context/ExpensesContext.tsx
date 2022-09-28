@@ -78,7 +78,8 @@ export const useExpensesContext = () => {
         return response;
     }
 
-    function getUserMonths(currentDateMonth: ExpenseDateTime): Promise<AxiosResponse<Month, any>> {
+    function getUserMonths(currentDateMonth: ExpenseDateTime, avoidDefineCurrentMonth?: boolean): Promise<AxiosResponse<Month, any>> {
+        avoidDefineCurrentMonth = avoidDefineCurrentMonth || false;
         currentDateMonth = currentMonth.getDateObject();
 
         const response = queryItems(TABLE, {
@@ -96,7 +97,7 @@ export const useExpensesContext = () => {
             let monthList: Array<Month> = new Array<Month>();
             response.data.Items.forEach((element: any) => {
                 let _month: Month = new Month(element);
-                if (_month.getDateObject().toString() == new ExpenseDateTime().toString()) setCurrentMonth(_month);
+                if (!avoidDefineCurrentMonth && _month.getDateObject().toString() == new ExpenseDateTime().toString()) setCurrentMonth(_month);
                 monthList.push(_month);
             });
 
