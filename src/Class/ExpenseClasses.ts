@@ -160,6 +160,13 @@ export class Month extends DynamoDBObject {
     expenseResume: number;
     isClosedMonth: boolean;
 
+    hasMonthCreated(): boolean {
+        if (this.pk != "" && this.sk != "") {
+            return true;
+        }
+        return false;
+    }
+
     getYear(): string {
         return this.sk.split('#')[1] || '';
     }

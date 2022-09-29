@@ -176,7 +176,6 @@ export const useExpensesContext = () => {
             ReturnValues: 'NONE'
         });
         response.then(() => {
-            // setExpensesValues([...expensesValues, values]);
             let _tempExp: Expense[] = [];
             expensesValues.forEach((currentExpense: Expense) => {
                 if (currentExpense.sk !== values.sk) {
@@ -235,10 +234,6 @@ export const useExpensesContext = () => {
             UpdateExpression: 'SET isPaid = :isPaid',
             ReturnValues: 'ALL_NEW'
         });
-        // No need to update current!
-        // response.then((data) => {
-        //     if (data.data.Attributes) setExpensesValues([...expensesValues, new Expense(data.data.Attributes)]);
-        // });
 
         return response;
     }

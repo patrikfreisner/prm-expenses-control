@@ -10,7 +10,7 @@ import "./ExpensesStyle.css"
 import { MonthBreadcrumbComponent } from "./MonthBreadcrumbComponent/MonthBreadcrumbComponent"
 
 const ExpensesComponent = () => {
-  const { currentMonth, getUserExpenses, loadUserExpenses, preProccessUserExpenses } = useExpensesContext();
+  const { currentMonth, getUserExpenses, getUserMonths, loadUserExpenses, preProccessUserExpenses } = useExpensesContext();
   const { addAlertEvent } = useEventHandlerContext();
 
   // const [currentTab, setCurrentTab] = useState(0);
@@ -29,6 +29,7 @@ const ExpensesComponent = () => {
   // );
 
   useEffect(() => {
+    getUserMonths(new ExpenseDateTime());
     getUserExpenses().catch(() => {
       addAlertEvent({
         name: "EXPENSES_RETRIEVE",
@@ -36,7 +37,7 @@ const ExpensesComponent = () => {
         type: "error"
       });
     });
-  }, [currentMonth]);
+  }, []);
 
   return (
     <>
