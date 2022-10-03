@@ -45,9 +45,7 @@ export const MonthBreadcrumbComponent = () => {
     }
 
     useEffect(() => {
-        getUserMonths(currentMonth.getDateObject()).then(() => {
-            createMonthList(3, 1);
-        });
+        createMonthList(3, 1);
     }, []);
 
     const handleChangeMonth = (_month: Month) => {
