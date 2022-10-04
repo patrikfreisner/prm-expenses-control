@@ -55,6 +55,7 @@ export const useExpensesContext = () => {
     function getUserExpenses(refMonth?: ExpenseDateTime, avoidContext?: boolean): Promise<AxiosResponse<Expense, any>> {
         let _refMonth: ExpenseDateTime = refMonth || currentMonth.getDateObject();
         let _avoidContext: boolean = avoidContext || false;
+        
 
         const response = queryItems(TABLE, {
             KeyConditionExpression: '#pk = :pk and begins_with(#sk, :sk)',
@@ -75,6 +76,7 @@ export const useExpensesContext = () => {
 
             if (!_avoidContext) setExpensesValues(expenseList);
         });
+
         return response;
     }
 

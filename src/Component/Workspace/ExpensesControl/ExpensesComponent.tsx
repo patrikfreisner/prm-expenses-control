@@ -29,7 +29,17 @@ const ExpensesComponent = () => {
   // );
 
   useEffect(() => {
-    getUserMonths(new ExpenseDateTime());
+    getUserMonths(new ExpenseDateTime()).then(() => {
+    }).catch(() => {
+      addAlertEvent({
+        name: "MONTHS_RETRIEVE",
+        message: "Um problema ocorreu ao carregar suas informações (Mês atual e cadastrados), você está conectado a internet?",
+        type: "error"
+      });
+    });
+  }, [])
+
+  useEffect(() => {
     getUserExpenses().catch(() => {
       addAlertEvent({
         name: "EXPENSES_RETRIEVE",
@@ -37,7 +47,7 @@ const ExpensesComponent = () => {
         type: "error"
       });
     });
-  }, []);
+  }, [currentMonth]);
 
   return (
     <>

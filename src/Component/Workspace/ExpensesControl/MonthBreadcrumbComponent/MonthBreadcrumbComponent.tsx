@@ -10,7 +10,7 @@ import { useExpensesContext } from '../../../../Context/ExpensesContext';
 
 export const MonthBreadcrumbComponent = () => {
 
-    const { getUserMonths, monthValues, currentMonth, setCurrentMonth } = useExpensesContext();
+    const { monthValues, currentMonth, setCurrentMonth } = useExpensesContext();
     const [month, setMonth] = useState(new Array<Month>());
 
     const createMonthList = (backward: number, forward: number) => {
@@ -44,20 +44,20 @@ export const MonthBreadcrumbComponent = () => {
         setMonth(createdMonthList);
     }
 
-    useEffect(() => {
-        createMonthList(3, 1);
-    }, []);
-
     const handleChangeMonth = (_month: Month) => {
         setCurrentMonth(_month);
     }
 
+    useEffect(() => {
+        createMonthList(3, 1);
+    }, [monthValues, currentMonth]);
+
     const handleSquareColor = (item: Month) => {
-        if (item.getDateObject().toString() == new ExpenseDateTime().toString()) {
+        if (item.getDateObject().toString() == currentMonth.getDateObject().toString()) {
             return blue[700];
         } else if (item.isClosedMonth == true) {
             return green[700];
-        } else if (item.hasMonthCreated() && item.getDateObject().toString() != new ExpenseDateTime().toString()) {
+        } else if (item.hasMonthCreated() && item.getDateObject().toString() != currentMonth.getDateObject().toString()) {
             return deepOrange[500];
         } else {
             return grey[500];

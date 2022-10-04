@@ -22,7 +22,7 @@ interface ExpenseInsertUpdateComponentParam {
 }
 // DEFINE A METHOD TO FULLFILL OR EDIT 'PAID'
 export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFailed, onCancel, ...props }: ExpenseInsertUpdateComponentParam) => {
-    const { createExpenses, updateExpenses } = useExpensesContext();
+    const { createExpenses, updateExpenses, currentMonth } = useExpensesContext();
     const { addAlertEvent } = useEventHandlerContext();
 
 
@@ -33,8 +33,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
     const handleClose = () => { setShowConfirmationDialog(false); }
     const [currentExpense, setCurrentExpense] = useState(new Expense({}));
 
-    const _date: ExpenseDateTime = new ExpenseDateTime();
-    let _maxDateRange: ExpenseDateTime = new ExpenseDateTime();
+    let _maxDateRange: ExpenseDateTime = currentMonth.getDateObject();
     _maxDateRange.setFullYear(_maxDateRange.getFullYear() + 4);
 
     let initialValues = formInitialValue || {
@@ -42,8 +41,8 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
         value: "",
         isRecurring: false,
         isFixed: false,
-        recurringStart: _date,
-        recurringEnd: _date
+        recurringStart: currentMonth.getDateObject(),
+        recurringEnd: currentMonth.getDateObject()
     };
 
     const formController = useForm({
@@ -60,7 +59,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
                     expValues.recurringStart?.getMonth().toString().length > 1 ?
                         expValues.recurringStart?.getMonth() + 1 :
                         "0" + (expValues.recurringStart?.getMonth() + 1).toString()
-                    : 0) + "#" + expValues.getType() + "#" + new Date().getTime();
+                    : 0) + "#" + expValues.getType() + "#" + new Date().getTime(); // This date is only to make sure no sk is equal another;
         }
 
         if (expValues.isRecurring == false) {
@@ -83,7 +82,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
     const confirmExpenseCreation = (expense: Expense) => {
         let expenseValue: Expense = expense || currentExpense;
         setIsFormLoading(true);
-        createExpenses(expenseValue).then((response) => {
+        createExpenses(expenseValue).then(() => {
             setIsFormLoading(false);
             addAlertEvent({
                 name: "EXPENSE-CREATION-SUCCESS",
