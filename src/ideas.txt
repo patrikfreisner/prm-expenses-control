@@ -9,7 +9,7 @@
 - Problems related to Expense class, it is settted by default to use everything as "new ExpenseDateTime()" which's not good when navigating arroud old months!
 - Problem when creating month with 2 number (like 10 (october)), months with only 1 number is doing ok (like 09)!
 
-
+- Busca de Months é apenas para o ano atual, restringir exibição no Breadcrumbs apenas para o ano atual, se passar para outro ano deve-se realizar uma busca novamente;
 ------------------------------------------------------------
 - Criar campo "ReferenceExpensePK";
 - Criar campo "ReferenceExpenseSK";

@@ -54,12 +54,20 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
         let expValues: Expense = new Expense(values);
 
         if (!formInitialValue) {
-            expValues.sk = expValues.recurringStart?.getFullYear() + "#" + (
-                expValues.recurringStart ?
-                    expValues.recurringStart?.getMonth().toString().length > 1 ?
-                        expValues.recurringStart?.getMonth() + 1 :
-                        "0" + (expValues.recurringStart?.getMonth() + 1).toString()
-                    : 0) + "#" + expValues.getType() + "#" + new Date().getTime(); // This date is only to make sure no sk is equal another;
+            expValues.sk = expValues.recurringStart?.getFullYear() + "#";
+            // Define month
+            if (expValues.getType() == "RECURRING_EXPENSE") {
+                expValues.sk = expValues.recurringCurrentDate?.toFilterString() + "#" + expValues.getType() + "#" + new Date().getTime(); // This date is only to make sure no sk is equal another;
+            } else {
+                expValues.sk = currentMonth.getDateObject().toFilterString() + "#" + expValues.getType() + "#" + new Date().getTime(); // This date is only to make sure no sk is equal another;
+            }
+
+            // expValues.sk = expValues.recurringStart?.getFullYear() + "#" + (
+            //     expValues.recurringStart ?
+            //         expValues.recurringStart?.getMonth().toString().length > 1 ?
+            //             expValues.recurringStart?.getMonth() + 1 :
+            //             "0" + (expValues.recurringStart?.getMonth() + 1).toString()
+            //         : null) + "#" + expValues.getType() + "#" + new Date().getTime(); 
         }
 
         if (expValues.isRecurring == false) {
@@ -68,6 +76,7 @@ export const ExpenseInsertUpdateComponent = ({ formInitialValue, onSuccess, onFa
 
             if (!formInitialValue) {
                 console.log(">>> Running create on InsertUpdateCompo");
+                expValues.recurringCurrentDate = currentMonth.getDateObject();
                 confirmExpenseCreation(expValues);
             } else {
                 console.log(">>> Running update on InsertUpdateCompo");

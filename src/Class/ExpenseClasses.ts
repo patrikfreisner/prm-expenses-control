@@ -66,15 +66,15 @@ export class ExpenseDateTime extends Date {
 }
 
 export class Expense extends DynamoDBObject {
-    constructor(expense: { pk?: string, sk?: string, description?: string, value?: number, isPaid?: boolean, isRecurring?: boolean, isFixed?: boolean, recurringStart?: ExpenseDateTime, recurringEnd?: ExpenseDateTime, created_at?: Date, updated_at?: Date, category?: string }) {
+    constructor(expense: { pk?: string, sk?: string, description?: string, value?: number, isPaid?: boolean, isRecurring?: boolean, isFixed?: boolean, recurringStart?: ExpenseDateTime, recurringEnd?: ExpenseDateTime, recurringCurrent?: ExpenseDateTime, created_at?: Date, updated_at?: Date, category?: string }) {
         super(expense.pk, expense.sk, expense.created_at, expense.updated_at);
         this.description = expense.description || '';
         this.value = expense.value || 0;
         this.isRecurring = expense.isRecurring || false;
         this.isFixed = expense.isFixed || false;
-        this.recurringStart = expense.isRecurring === true && !expense.recurringStart ? new ExpenseDateTime() : (new ExpenseDateTime(expense.recurringStart) || null);
+        this.recurringStart = expense.isRecurring === true && expense.recurringStart ? new ExpenseDateTime(expense.recurringStart) : null;
         this.recurringEnd = expense.isRecurring === true && !expense.recurringEnd ? new ExpenseDateTime("2999-01-01 00:00:01") : (new ExpenseDateTime(expense.recurringEnd) || null);
-        this.recurringCurrentDate = expense.isRecurring === true && expense.isFixed == false ? new ExpenseDateTime() : this.recurringStart;
+        this.recurringCurrentDate = expense.isRecurring === true && expense.isFixed == false && expense.recurringCurrent ? expense.recurringCurrent : new ExpenseDateTime();
         this.isPaid = expense.isPaid || false;
         this.category = expense.category || "";
     }
