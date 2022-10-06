@@ -30,7 +30,7 @@ function ExpenseLaneComponent({ name, type }: ExpenseLaneComponentParams) {
             // We used "+" before values to make Typescript sum instead of concatenate
             return +count + +expense.value;
         }, 0));
-    }, [expensesValues]);
+    }, [currentMonth, expensesValues, currentLaneExpenses]);
 
     return (
         <>

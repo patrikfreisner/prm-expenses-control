@@ -10,23 +10,8 @@ import "./ExpensesStyle.css"
 import { MonthBreadcrumbComponent } from "./MonthBreadcrumbComponent/MonthBreadcrumbComponent"
 
 const ExpensesComponent = () => {
-  const { currentMonth, getUserExpenses, getUserMonths, loadUserExpenses, preProccessUserExpenses } = useExpensesContext();
+  const { currentMonth, getUserExpenses, getUserMonths } = useExpensesContext();
   const { addAlertEvent } = useEventHandlerContext();
-
-  // const [currentTab, setCurrentTab] = useState(0);
-
-  // const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-  //   setCurrentTab(newValue);
-  // };
-
-  // let _month = new ExpenseDateTime();
-  // _month.setMonth(_month.getMonth() - 2);
-
-  // loadUserExpenses(_month).then(
-  //   (data: any) => {
-  //     let _data: Array<Expense> = preProccessUserExpenses(data);
-  //   }
-  // );
 
   useEffect(() => {
     getUserMonths(new ExpenseDateTime()).then(() => {

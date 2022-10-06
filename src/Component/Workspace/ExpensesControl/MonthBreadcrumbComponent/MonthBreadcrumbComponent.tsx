@@ -12,6 +12,23 @@ export const MonthBreadcrumbComponent = () => {
 
     const { monthValues, currentMonth, setCurrentMonth } = useExpensesContext();
     const [month, setMonth] = useState(new Array<Month>());
+    const [currentTabIndex, setcurrentTabIndex] = useState(Number);
+
+    useEffect(() => {
+        if (currentMonth.getDateObject().getMonth() === 0) {
+            createMonthList(1, 4);
+        } else if (currentMonth.getDateObject().getMonth() === 11) {
+            createMonthList(4, 1);
+        } else {
+            if (!currentTabIndex) {
+                createMonthList(3, 1);
+            } else if (currentTabIndex === 4) {
+                createMonthList(currentTabIndex - 1, 1);
+            } else {
+                createMonthList(currentTabIndex, 4 - currentTabIndex);
+            }
+        }
+    }, [monthValues, currentMonth, currentTabIndex]);
 
     const createMonthList = (backward: number, forward: number) => {
         let createdMonthList: Array<Month> = [];
@@ -21,10 +38,13 @@ export const MonthBreadcrumbComponent = () => {
             let _month = new ExpenseDateTime(currentMonth.getDateObject());
             _month.setMonth(_month.getMonth() - -index);
 
+            // if (_month.getFullYear() == currentMonth.getDateObject().getFullYear()) {
             let _monthObj: Month = new Month({ sk: "MONTH#" + _month.toFilterString() });
             createdMonthList.push(_monthObj);
+            // }
         }
 
+        if (!currentTabIndex) setcurrentTabIndex(createdMonthList.length);
         createdMonthList.push(currentMonth);
 
         for (let i in Array.from(Array(forward).keys())) {
@@ -33,7 +53,9 @@ export const MonthBreadcrumbComponent = () => {
             _month.setMonth(_month.getMonth() + index);
 
             let _monthObj: Month = new Month({ sk: "MONTH#" + _month.toFilterString() });
+            // if (_month.getFullYear() == currentMonth.getDateObject().getFullYear()) {
             createdMonthList.push(_monthObj);
+            // }
         }
 
         createdMonthList = createdMonthList.map((item: Month) => {
@@ -44,13 +66,10 @@ export const MonthBreadcrumbComponent = () => {
         setMonth(createdMonthList);
     }
 
-    const handleChangeMonth = (_month: Month) => {
+    const handleChangeMonth = (_month: Month, index: number) => {
+        setcurrentTabIndex(index);
         setCurrentMonth(_month);
     }
-
-    useEffect(() => {
-        createMonthList(3, 1);
-    }, [monthValues, currentMonth]);
 
     const handleSquareColor = (item: Month) => {
         if (item.getDateObject().toString() == currentMonth.getDateObject().toString()) {
@@ -69,36 +88,28 @@ export const MonthBreadcrumbComponent = () => {
             <Grid item xs={12}>
                 <Avatar key={currentMonth.pk + currentMonth.sk}
                     sx={{ bgcolor: blue[700], width: "100%" }}
-                    variant="square"
-                    onClick={() => handleChangeMonth(currentMonth)}>
+                    variant="square">
                     {currentMonth.getDateObject().getFullYear()}
                 </Avatar>
             </Grid>
             <Grid className='breadcrumb-box' item xs={12}>
                 <Breadcrumbs
-                    itemsAfterCollapse={1}
+                    itemsAfterCollapse={3}
                     itemsBeforeCollapse={3}
+                // maxItems={5}
                 >
-                    {month.map((item: Month) => {
+                    {month.map((item: Month, index: number) => {
                         return (
                             <Avatar key={item.pk + item.sk}
                                 sx={{ bgcolor: handleSquareColor(item) }}
                                 variant="square"
-                                onClick={() => handleChangeMonth(item)}>
+                                onClick={() => handleChangeMonth(item, index)}>
                                 {item.getDateObject().getFormatedMonth()}
                             </Avatar>
                         );
                     })}
                 </Breadcrumbs>
             </Grid>
-            {/* <Grid className='divider-box' item xs={12}>
-                <Divider />
-            </Grid>
-            <Grid className='accordion-box' item xs={12}>
-                <Typography variant='h6'>
-                    Details
-                </Typography>
-            </Grid> */}
         </Grid>
     )
 }
