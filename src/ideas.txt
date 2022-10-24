@@ -5,7 +5,7 @@
 - Posso buscar dos 'N' ultimos messes \/ Não posso criar qualquer, mês apenas atual
 
 - - Para Expenses
-
+- - FALTA AJUSTAR O BREADCRUMB, AINDA ESTÁ COM EXIBIÇÃO COM PROBLEMAS!!!!!!!!!
 - Busca de Months é apenas para o ano atual, restringir exibição no Breadcrumbs apenas para o ano atual, se passar para outro ano deve-se realizar uma busca novamente;
 ------------------------------------------------------------
 - Criar campo "ReferenceExpensePK";
