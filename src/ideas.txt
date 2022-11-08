@@ -26,3 +26,23 @@
 - Apagar despesa do tipo "Recorrente":
   - Exibir mensagem: "Deseja encerrar recorrencia?"
   - Apagar apenas recorrencia atual;
+
+
+
+
+
+
+
+  ===========================================================
+  = 1) ----------------
+  Busca de despesas;
+  - Busca o ultimo mês;
+  - Gera lista separada por categoria (variavel, fixa, recorrente)
+  - Despesas recorrente e fixas vem marcadas;
+  - Despesas variaveis são listadas mas não nascem marcada;
+  
+  - Clica em submit e gera mês com as despesas, há opção de "Não importar despesas";
+  
+  OBS!!!
+  - Posso importar a qualquer momento os dados;
+  - sempre busca do ultimo mês!
