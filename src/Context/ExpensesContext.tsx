@@ -52,10 +52,14 @@ export const useExpensesContext = () => {
 
     const { userData } = useLoginContext();
 
+
+    // //
+    // Data Collection
+    // //
     function getUserExpenses(refMonth?: ExpenseDateTime, avoidContext?: boolean): Promise<AxiosResponse<Expense, any>> {
         let _refMonth: ExpenseDateTime = refMonth || currentMonth.getDateObject();
         let _avoidContext: boolean = avoidContext || false;
-        
+
 
         const response = queryItems(TABLE, {
             KeyConditionExpression: '#pk = :pk and begins_with(#sk, :sk)',
@@ -106,18 +110,6 @@ export const useExpensesContext = () => {
             setMonthValues(monthList);
         });
         return response;
-    }
-
-    function loadUserExpenses(refMonth: ExpenseDateTime): Promise<AxiosResponse<Expense, any>> {
-        return getUserExpenses(refMonth, true);
-    }
-
-    function preProccessUserExpenses(responseData: AxiosResponse<any, any>): Array<Expense> {
-        let _expenseList: Array<Expense> = new Array<Expense>();
-        responseData.data.Items.forEach((element: any) => {
-            _expenseList.push(new Expense(element));
-        });
-        return _expenseList;
     }
 
     function createExpenses(values: Expense): Promise<AxiosResponse<Expense, any>> {
@@ -260,6 +252,29 @@ export const useExpensesContext = () => {
         return response;
     }
 
+    // //
+    // Services and Data manipulation
+    // //
+    function loadUserExpenses(refMonth: ExpenseDateTime): Promise<AxiosResponse<Expense, any>> {
+        return getUserExpenses(refMonth, true);
+    }
+
+    function preProccessUserExpenses(responseData: AxiosResponse<any, any>): Array<Expense> {
+        let _expenseList: Array<Expense> = new Array<Expense>();
+        responseData.data.Items.forEach((element: any) => {
+            _expenseList.push(new Expense(element));
+        });
+        return _expenseList;
+    }
+
+    function hasLastMonth(): boolean {
+        let currentMonthPos: number = monthValues.indexOf(currentMonth);
+        currentMonthPos = currentMonthPos - 1;
+
+        if (currentMonthPos >= 0) return false;
+        return monthValues[currentMonthPos].hasMonthCreated();
+    }
+
     return {
         expensesValues,
         monthValues,
@@ -275,6 +290,7 @@ export const useExpensesContext = () => {
         deleteExpense,
         deleteMonth,
         loadUserExpenses,
-        preProccessUserExpenses
+        preProccessUserExpenses,
+        hasLastMonth,
     };
 }
